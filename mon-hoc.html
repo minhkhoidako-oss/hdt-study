@@ -1,58 +1,279 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Kho tài liệu các môn THPT miễn phí của HDT Study, có số lượng tài liệu cập nhật theo Google Sheets.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kho môn học và kỳ thi của HDT Study, cập nhật số lượng tài liệu trực tiếp từ Google Sheets.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://hdt-study.pages.dev/mon-hoc.html">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <title>Môn học THPT | HDT Study</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>Môn học & Kỳ thi | HDT Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="hdt-v23-ui.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hdt-v23-ui.css">
 </head>
 <body class="hub-page v23-page">
-  <div class="topbar"><div class="container topbar-inner"><span class="topbar-brand">HDT Study — Kho tài liệu ôn thi THPT miễn phí</span><a class="topbar-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo nhanh · 0976 366 683</a></div></div>
-  <header class="header"><div class="container nav-wrap">
-    <a class="brand" href="index.html" aria-label="HDT Study"><img class="brand-icon" src="hdt-logo-icon.png" alt=""><span class="brand-copy"><strong>HDT Study</strong><small>TÀI LIỆU ÔN THI THPTQG MIỄN PHÍ</small></span></a>
-    <nav class="desktop-nav"><a href="index.html#tai-lieu">Tài liệu</a><a href="ky-thi.html">Đề thi & kỳ thi</a><a href="mon-hoc.html" aria-current="page">Môn học</a><a class="nav-course-link" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer"><span class="nav-course-dot"></span>Khóa học</a><a href="index.html#lo-trinh">Lộ trình</a><a href="index.html#goc-hoc">Góc học tập</a></nav>
-    <div class="nav-actions"><a class="zalo-btn" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo HDT <small>0976 366 683</small></a></div>
-  </div></header>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <span class="topbar-brand">HDT Study — Kho tài liệu ôn thi THPT miễn phí</span>
+      <a class="topbar-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo nhanh · 0976 366 683</a>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="HDT Study">
+        <img class="brand-icon" src="hdt-logo-icon.png" alt="">
+        <span class="brand-copy"><strong>HDT Study</strong><small>TÀI LIỆU ÔN THI THPTQG MIỄN PHÍ</small></span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="index.html#tai-lieu">Tài liệu</a>
+        <a href="ky-thi.html">Đề thi & kỳ thi</a>
+        <a href="mon-hoc.html" aria-current="page">Môn học</a>
+        <a class="nav-course-link" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer"><span class="nav-course-dot"></span>Khóa học</a>
+        <a href="index.html#lo-trinh">Lộ trình</a>
+        <a href="index.html#goc-hoc">Góc học tập</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="zalo-btn" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo HDT <small>0976 366 683</small></a>
+      </div>
+    </div>
+  </header>
 
   <main>
-    <section class="hub-hero v23-hero"><div class="container hub-hero-grid"><div>
-      <span class="hub-kicker"><i></i> KHO MÔN HỌC THPT</span>
-      <h1>Học theo môn,<br><span>ôn đúng phần cần thiết.</span></h1>
-      <p class="hub-lead">Không còn các ô trống vô nghĩa. Mỗi môn hiển thị số tài liệu hiện có và dẫn thẳng đến kho tương ứng.</p>
-      <div class="hub-pill-row"><span class="hub-pill">Lớp 10–12</span><span class="hub-pill">PDF</span><span class="hub-pill">Miễn phí</span><span class="hub-pill">Cập nhật từ Sheets</span></div>
-    </div><div class="hub-hero-card"><h3>Chọn nhanh</h3><p>Ưu tiên những môn đang có nhiều học liệu, đồng thời vẫn giữ đủ 11 nhóm để bạn khám phá.</p><div class="hub-pill-row"><span class="hub-pill">Toán</span><span class="hub-pill">Ngữ Văn</span><span class="hub-pill">Anh</span><span class="hub-pill">Lý</span><span class="hub-pill">Hóa</span><span class="hub-pill">Sinh</span></div></div></div></section>
+    <section class="hub-hero v23-hero">
+      <div class="container hub-hero-grid">
+        <div>
+          <span class="hub-kicker"><i></i> KHO MÔN HỌC & KỲ THI</span>
+          <h1>Học theo môn,<br><span>ôn đúng kỳ thi.</span></h1>
+          <p class="hub-lead">Chọn môn học hoặc kỳ thi. Số lượng tài liệu được lấy trực tiếp từ Google Sheets nên khi bạn cập nhật dữ liệu, website sẽ tự đồng bộ.</p>
+          <div class="hub-pill-row">
+            <span class="hub-pill">Lớp 10–12</span>
+            <span class="hub-pill">PDF</span>
+            <span class="hub-pill">Miễn phí</span>
+            <span class="hub-pill">Cập nhật từ Sheets</span>
+          </div>
+        </div>
+        <div class="hub-hero-card">
+          <h3>Chọn nhanh</h3>
+          <p>Kho môn học dành cho chương trình THPT và kho kỳ thi dành cho mục tiêu tuyển sinh.</p>
+          <div class="hub-pill-row">
+            <span class="hub-pill">Toán</span><span class="hub-pill">Anh</span><span class="hub-pill">Lý</span>
+            <span class="hub-pill">HSA</span><span class="hub-pill">V-ACT</span><span class="hub-pill">TSA</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <section class="v23-section"><div class="container">
-      <div class="v23-section-head"><div><div class="v23-kicker">KHÁM PHÁ</div><h2>11 nhóm môn chính</h2><p class="v23-lead">Bấm vào môn để xem kho tài liệu. Số lượng bên phải lấy trực tiếp từ Google Sheets, vì vậy khi bạn thêm tài liệu thì giao diện tự cập nhật.</p></div></div>
-      <div id="subjectGrid" class="v23-subject-grid"></div>
-    </div></section>
+    <section class="v23-section">
+      <div class="container">
+        <div class="v23-section-head">
+          <div>
+            <div class="v23-kicker">KHÁM PHÁ</div>
+            <h2>11 nhóm môn chính</h2>
+            <p class="v23-lead">Số tài liệu theo từng môn học. Bấm vào thẻ để xem kho tương ứng.</p>
+          </div>
+        </div>
+        <div id="subjectGrid" class="v23-subject-grid"></div>
+      </div>
+    </section>
 
-    <section class="v23-section alt"><div class="container"><div class="v23-section-head"><div><div class="v23-kicker">GỢI Ý</div><h2>Học theo mục tiêu, không theo cảm tính</h2></div></div><div class="v23-stat-row"><div class="v23-stat"><strong>01</strong><span>Chọn môn</span></div><div class="v23-stat"><strong>02</strong><span>Lọc tài liệu</span></div><div class="v23-stat"><strong>03</strong><span>Xem chi tiết</span></div><div class="v23-stat"><strong>04</strong><span>Học với PDF</span></div></div></div></section>
+    <section class="v23-section alt">
+      <div class="container">
+        <div class="v23-section-head">
+          <div>
+            <div class="v23-kicker">TUYỂN SINH</div>
+            <h2>Kho tài liệu theo kỳ thi</h2>
+            <p class="v23-lead">HSA, V-ACT, TSA, SPT và H-SCA dùng cột <strong>exam</strong> trong Google Sheets để phân loại chính xác.</p>
+          </div>
+        </div>
+        <div id="examGrid" class="v23-subject-grid"></div>
+      </div>
+    </section>
+
+    <section class="v23-section">
+      <div class="container">
+        <div class="v23-section-head">
+          <div>
+            <div class="v23-kicker">QUY TRÌNH</div>
+            <h2>Thêm tài liệu không cần sửa website</h2>
+          </div>
+        </div>
+        <div class="v23-stat-row">
+          <div class="v23-stat"><strong>01</strong><span>Thêm tài liệu vào Google Sheets</span></div>
+          <div class="v23-stat"><strong>02</strong><span>Chọn đúng môn + exam</span></div>
+          <div class="v23-stat"><strong>03</strong><span>Website tự đồng bộ</span></div>
+          <div class="v23-stat"><strong>04</strong><span>Học bằng PDF</span></div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="footer"><div class="container footer-grid"><div><a class="brand footer-brand" href="index.html"><span class="brand-mark">HDT</span><span class="brand-copy"><strong>HDT Study</strong><small>THPT · FREE RESOURCES</small></span></a><p class="footer-copy">Kho tài liệu ôn thi THPT gọn gàng, dễ tìm và ưu tiên trải nghiệm học tập.</p></div><div><strong>Khám phá</strong><a href="index.html#tai-lieu">Tài liệu</a><a href="ky-thi.html">Đề thi & kỳ thi</a><a href="mon-hoc.html">Môn học</a></div><div><strong>Hỗ trợ</strong><a href="index.html#goc-hoc">Góc học tập</a><a href="lien-he.html">Liên hệ</a><a href="ban-quyen.html">Bản quyền</a></div><div><strong>Liên hệ nhanh</strong><a class="footer-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo: 0976 366 683 ↗</a></div></div><div class="container footer-bottom"><span>© <span id="year"></span> HDT Study.</span><span>Made for Vietnamese students.</span></div></footer>
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <a class="brand footer-brand" href="index.html"><span class="brand-mark">HDT</span><span class="brand-copy"><strong>HDT Study</strong><small>THPT · FREE RESOURCES</small></span></a>
+        <p class="footer-copy">Kho tài liệu ôn thi THPT gọn gàng, dễ tìm và ưu tiên trải nghiệm học tập.</p>
+      </div>
+      <div><strong>Khám phá</strong><a href="index.html#tai-lieu">Tài liệu</a><a href="ky-thi.html">Đề thi & kỳ thi</a><a href="mon-hoc.html">Môn học</a></div>
+      <div><strong>Hỗ trợ</strong><a href="index.html#goc-hoc">Góc học tập</a><a href="lien-he.html">Liên hệ</a><a href="ban-quyen.html">Bản quyền</a></div>
+      <div><strong>Liên hệ nhanh</strong><a class="footer-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo: 0976 366 683 ↗</a></div>
+    </div>
+    <div class="container footer-bottom"><span>© <span id="year"></span> HDT Study.</span><span>Made for Vietnamese students.</span></div>
+  </footer>
 
   <script src="config.js"></script>
   <script>
-    const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
-    const parseCsv=t=>{const rows=[];let row=[],cell='',q=false;for(let i=0;i<t.length;i++){const c=t[i],n=t[i+1];if(c==='"'){if(q&&n==='"'){cell+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cell);cell='';if(row.some(x=>x.trim()))rows.push(row);row=[];}else cell+=c;}if(cell!==''||row.length){row.push(cell);if(row.some(x=>x.trim()))rows.push(row);}if(!rows.length)return[];const h=rows[0].map(x=>normalize(x));return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))};
-    const subjects=[
-      ['Toán','Đề & chuyên đề','#3972ef','#edf4ff','Môn Toán'],['Ngữ Văn','Đọc hiểu & nghị luận','#df607f','#fff1f5','Môn Ngữ Văn'],['Tiếng Anh','Grammar & practice','#6267d8','#f0f1ff','Môn Tiếng Anh'],
-      ['Vật Lý','Công thức & bài tập','#199db4','#eafaff','Môn Vật Lý'],['Hóa Học','Phản ứng & chuyên đề','#e98932','#fff4e7','Môn Hóa Học'],['Sinh Học','Lý thuyết & luyện đề','#2da66f','#ecfbf3','Môn Sinh Học'],
-      ['Địa Lý','Kỹ năng & dữ liệu','#c99224','#fff8e3','Môn Địa Lý'],['Lịch Sử','Tóm tắt & luyện câu hỏi','#895fe1','#f3efff','Môn Lịch Sử'],['GDKT&PL','Kinh tế & pháp luật','#159b8d','#eafbf8','Môn GDKT&PL'],
-      ['Tin Học','Thuật toán & ứng dụng','#3972ef','#edf4ff','Môn Tin Học'],['Công Nghệ','Công nghiệp & nông nghiệp','#e98932','#fff4e7','Môn Công Nghệ']
+    const normalize = v => String(v || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const parseCsv = t => {
+      const rows = []; let row = [], cell = '', q = false;
+      for (let i = 0; i < t.length; i++) {
+        const c = t[i], n = t[i + 1];
+        if (c === '"') {
+          if (q && n === '"') { cell += '"'; i++; } else q = !q;
+        } else if (c === ',' && !q) {
+          row.push(cell); cell = '';
+        } else if ((c === '\n' || c === '\r') && !q) {
+          if (c === '\r' && n === '\n') i++;
+          row.push(cell); cell = '';
+          if (row.some(x => x.trim())) rows.push(row);
+          row = [];
+        } else cell += c;
+      }
+      if (cell !== '' || row.length) { row.push(cell); if (row.some(x => x.trim())) rows.push(row); }
+      if (!rows.length) return [];
+      const headers = rows[0].map(x => normalize(x));
+      return rows.slice(1).map(r => Object.fromEntries(headers.map((h, i) => [h, (r[i] || '').trim()])));
+    };
+
+    const subjects = [
+      ['Toán','Đề & chuyên đề','#3972ef','#edf4ff'],
+      ['Ngữ Văn','Đọc hiểu & nghị luận','#df607f','#fff1f5'],
+      ['Tiếng Anh','Grammar & practice','#6267d8','#f0f1ff'],
+      ['Vật Lý','Công thức & bài tập','#199db4','#eafaff'],
+      ['Hóa Học','Phản ứng & chuyên đề','#e98932','#fff4e7'],
+      ['Sinh Học','Lý thuyết & luyện đề','#2da66f','#ecfbf3'],
+      ['Địa Lý','Kỹ năng & dữ liệu','#c99224','#fff8e3'],
+      ['Lịch Sử','Tóm tắt & luyện câu hỏi','#895fe1','#f3efff'],
+      ['GDKT&PL','Kinh tế & pháp luật','#159b8d','#eafbf8'],
+      ['Tin Học','Thuật toán & ứng dụng','#3972ef','#edf4ff'],
+      ['Công Nghệ','Công nghiệp & nông nghiệp','#e98932','#fff4e7']
     ];
-    const grid=document.getElementById('subjectGrid');
-    function subjectIcon(name){const icons={'Toán':'＋','Ngữ Văn':'▤','Tiếng Anh':'文','Vật Lý':'⚛','Hóa Học':'⚗','Sinh Học':'♧','Địa Lý':'◎','Lịch Sử':'▥','GDKT&PL':'▥','Tin Học':'▱','Công Nghệ':'◫'};return `<span style="font-size:24px;line-height:1">${icons[name]||'•'}</span>`}
-    function render(counts){grid.innerHTML=subjects.map(([name,sub,accent,soft])=>{const n=counts[normalize(name)]||0;return `<a class="v23-subject-card" href="danh-muc.html?subject=${encodeURIComponent(name)}"><span class="v23-subject-icon" style="--accent:${accent};--soft:${soft}">${subjectIcon(name)}</span><span class="v23-subject-copy"><strong>${esc(name)}</strong><small>${esc(sub)}</small></span><span class="v23-subject-side"><span class="v23-subject-count">${n} tài liệu</span><span class="v23-subject-arrow">→</span></span></a>`}).join('')}
-    async function init(){const counts=Object.fromEntries(subjects.map(([n])=>[normalize(n),0]));try{const res=await fetch(GOOGLE_SHEET_CSV_URL,{cache:'no-store'});if(!res.ok)throw new Error('fetch');const rows=parseCsv(await res.text());rows.filter(r=>r.title).forEach(r=>{const s=normalize(r.subject||'Khác');if(counts[s]!==undefined)counts[s]++;});render(counts);}catch(e){render(counts);}}
-    document.getElementById('year').textContent=new Date().getFullYear();init();
+
+    const exams = [
+      ['tn-thpt','Tốt nghiệp THPT','Ôn thi tốt nghiệp THPT','#3972ef','#edf4ff'],
+      ['v-act','V-ACT','ĐGNL ĐHQG-HCM','#8057d8','#f3efff'],
+      ['hsa','HSA','ĐGNL ĐHQGHN','#2da66f','#ecfbf3'],
+      ['tsa','TSA','ĐGTD – Bách khoa Hà Nội','#e98932','#fff4e7'],
+      ['spt','SPT','ĐGNL – ĐH Sư phạm Hà Nội','#3d76ea','#edf4ff'],
+      ['hsca','H-SCA','ĐGNL chuyên biệt – ĐH Sư phạm TP.HCM','#db5b8a','#fff1f6']
+    ];
+
+    const subjectGrid = document.getElementById('subjectGrid');
+    const examGrid = document.getElementById('examGrid');
+
+    const icons = {
+      'Toán':'＋','Ngữ Văn':'▤','Tiếng Anh':'文','Vật Lý':'⚛','Hóa Học':'⚗',
+      'Sinh Học':'♧','Địa Lý':'◎','Lịch Sử':'▥','GDKT&PL':'▥','Tin Học':'▱','Công Nghệ':'◫'
+    };
+
+    function truthy(v) {
+      return ['true','1','yes','x','hot','featured','co','có'].includes(normalize(v));
+    }
+
+    function renderSubjects(rows) {
+      const counts = Object.fromEntries(subjects.map(([name]) => [normalize(name), 0]));
+      rows.filter(r => r.title).forEach(r => {
+        const key = normalize(r.subject || '');
+        if (key in counts) counts[key]++;
+      });
+
+      subjectGrid.innerHTML = subjects.map(([name, sub, accent, soft]) => {
+        const count = counts[normalize(name)] || 0;
+        return `
+          <a class="v23-subject-card" href="danh-muc.html?subject=${encodeURIComponent(name)}">
+            <span class="v23-subject-icon" style="--accent:${accent};--soft:${soft}">${icons[name] || '•'}</span>
+            <span class="v23-subject-copy">
+              <strong>${name}</strong>
+              <small>${sub}</small>
+            </span>
+            <span class="v23-subject-side">
+              <span class="v23-subject-count">${count} tài liệu</span>
+              <span class="v23-subject-arrow">→</span>
+            </span>
+          </a>`;
+      }).join('');
+    }
+
+    function normalizeExam(v) {
+      const n = normalize(v);
+      if (['tn-thpt','tn thpt','thptqg','tot nghiep','tot nghiep thpt'].includes(n)) return 'tn-thpt';
+      if (['v-act','v act','dgnl dhqg hcm','dhqg hcm'].includes(n)) return 'v-act';
+      if (['hsa','dgnl dhqg hn','dhqg hn'].includes(n)) return 'hsa';
+      if (['tsa','dgtd','danh gia tu duy','bach khoa ha noi'].includes(n)) return 'tsa';
+      if (['spt','dgnl spt','su pham ha noi','dai hoc su pham ha noi'].includes(n)) return 'spt';
+      if (['hsca','h sca','h-sca','dgnl chuyen biet','su pham tphcm','su pham thanh pho ho chi minh'].includes(n)) return 'hsca';
+      return '';
+    }
+
+    function getExamCodes(raw) {
+      return String(raw || '')
+        .split(/[,;|\/]+/)
+        .map(normalizeExam)
+        .filter(Boolean);
+    }
+
+    function renderExams(rows) {
+      const counts = Object.fromEntries(exams.map(([code]) => [code, 0]));
+
+      rows.filter(r => r.title).forEach(r => {
+        getExamCodes(r.exam || r.examtype || r.kythi || '').forEach(code => {
+          if (code in counts) counts[code]++;
+        });
+      });
+
+      examGrid.innerHTML = exams.map(([code, name, sub, accent, soft]) => {
+        const count = counts[code] || 0;
+        return `
+          <a class="v23-subject-card" href="danh-muc.html?exam=${encodeURIComponent(code)}">
+            <span class="v23-subject-icon" style="--accent:${accent};--soft:${soft}">${code === 'hsca' ? 'H' : code === 'tn-thpt' ? '✓' : code === 'v-act' ? 'V' : code === 'hsa' ? 'H' : code === 'tsa' ? 'T' : 'S'}</span>
+            <span class="v23-subject-copy">
+              <strong>${name}</strong>
+              <small>${sub}</small>
+            </span>
+            <span class="v23-subject-side">
+              <span class="v23-subject-count">${count} tài liệu</span>
+              <span class="v23-subject-arrow">→</span>
+            </span>
+          </a>`;
+      }).join('');
+    }
+
+    async function init() {
+      try {
+        const res = await fetch(`${GOOGLE_SHEET_CSV_URL}${GOOGLE_SHEET_CSV_URL.includes('?') ? '&' : '?'}t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) throw new Error('fetch');
+        const rows = parseCsv(await res.text());
+        renderSubjects(rows);
+        renderExams(rows);
+      } catch (e) {
+        renderSubjects([]);
+        renderExams([]);
+      }
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    init();
   </script>
 </body>
 </html>
