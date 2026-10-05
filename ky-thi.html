@@ -50,7 +50,19 @@
   <script>
     const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
     const parseCsv=t=>{const rows=[];let row=[],cell='',q=false;for(let i=0;i<t.length;i++){const c=t[i],n=t[i+1];if(c==='"'){if(q&&n==='"'){cell+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cell);cell='';if(row.some(x=>x.trim()))rows.push(row);row=[];}else cell+=c;}if(cell!==''||row.length){row.push(cell);if(row.some(x=>x.trim()))rows.push(row);}if(!rows.length)return[];const h=rows[0].map(x=>normalize(x));return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))};
-    const normalizeExamCode=v=>{const n=normalize(v);if(/(tn|thptqg|tot nghiep thpt|tot nghiep)/.test(n))return'tn-thpt';if(/v act|dhqg hcm|dgnl dhqg hcm/.test(n))return'v-act';if(/hsa|dhqg hn|dgnl dhqg hn/.test(n))return'hsa';if(/tsa|dgtd|danh gia tu duy|bach khoa ha noi/.test(n))return'tsa';if(/spt|danh gia nang luc spt|su pham ha noi|dai hoc su pham ha noi/.test(n))return'spt';if(/h-sca|hsca|dgnl chuyen biet|su pham tphcm|su pham thanh pho ho chi minh/.test(n))return'hsca';return''};
+    const normalizeExamCode = (v = '') => {
+      const n = normalize(v).replace(/\s+/g, ' ').trim();
+
+      if (['tn-thpt','tn thpt','tn','thptqg','tot nghiep','tot nghiep thpt'].includes(n)) return 'tn-thpt';
+      if (['v-act','v act','vact','dgnl dhqg hcm','dhqg hcm'].includes(n)) return 'v-act';
+      if (['hsa','dgnl dhqg hn','dhqg hn'].includes(n)) return 'hsa';
+      if (['tsa','dgtd','danh gia tu duy','bach khoa ha noi'].includes(n)) return 'tsa';
+      if (['spt','dgnl spt','su pham ha noi','dai hoc su pham ha noi'].includes(n)) return 'spt';
+      if (['hsca','h sca','h-sca','hs-ca','dgnl chuyen biet','su pham tphcm','su pham thanh pho ho chi minh'].includes(n)) return 'hsca';
+
+      return '';
+    };
+
     const inferExam=r=>{const raw=String(r.exam||r.examtype||r.kythi||'').trim();if(raw){const parts=raw.split(/[,;|\/]+/).map(normalizeExamCode).filter(Boolean);if(parts.length===1)return parts[0];}const hay=normalize([r.title,r.desc,r.type,r.tags].filter(Boolean).join(' '));return normalizeExamCode(hay)};
     async function loadCounts(){try{const res=await fetch(GOOGLE_SHEET_CSV_URL,{cache:'no-store'});if(!res.ok)throw new Error('fetch');const rows=parseCsv(await res.text());const counts={'tn-thpt':0,'v-act':0,'hsa':0,'tsa':0,'spt':0,'hsca':0};rows.filter(r=>r.title).forEach(r=>{const e=inferExam(r);if(e)counts[e]++;});document.querySelectorAll('[data-exam-count]').forEach(el=>{const n=counts[el.dataset.exam]||0;el.textContent=`${n} tài liệu`;});}catch(e){document.querySelectorAll('[data-exam-count]').forEach(el=>el.textContent='Xem kho →');}}
     document.getElementById('year').textContent=new Date().getFullYear(); loadCounts();
