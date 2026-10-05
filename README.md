@@ -1,23 +1,35 @@
-# HDT Study v16
+# HDT Study — v22 Final
 
-Website tĩnh cho kho tài liệu ôn thi THPT.
+HDT Study là website tĩnh cho kho tài liệu THPT, luyện thi tốt nghiệp THPT, ĐGNL và ĐGTD.
 
-## Điểm mới
-- Trang chi tiết tài liệu riêng: `tai-lieu.html?slug=...`
-- SEO title/description động theo tài liệu
-- Xem PDF / Tải PDF / Chia sẻ link
-- Dữ liệu tài liệu vẫn lấy từ Google Sheets CSV
-- Không cần database
-- Link PDF có thể là Google Drive hoặc URL PDF công khai
+## Kiến trúc
+- GitHub: mã nguồn website.
+- Cloudflare Pages: hosting + auto-deploy từ `main`.
+- Google Sheets: quản lý metadata tài liệu.
+- Google Drive hoặc URL PDF công khai: nơi lưu file.
+
+## Môn học
+Toán, Ngữ Văn, Tiếng Anh, Vật Lý, Hóa Học, Sinh Học, Lịch Sử, Địa Lý, GDKT&PL, Tin Học, Công Nghệ.
+
+## Kỳ thi
+Tốt nghiệp THPT, ĐGNL ĐHQG-HCM (V-ACT), ĐGNL ĐHQGHN (HSA), ĐGTD TSA.
+
+## Quản lý tài liệu
+Thêm tài liệu bằng các cột chính: `title`, `grade`, `subject`, `type`, `desc`, `fileUrl`, `fileSize`, `hot`, `featured`. Website tự xử lý slug, icon môn, tìm kiếm và SEO nội dung cơ bản.
+
+## Tìm kiếm
+Tìm kiếm không dấu, ưu tiên tiêu đề/môn/loại/lớp, hiểu một số từ khóa tương đương cho THPTQG, ĐGNL, ĐGTD, V-ACT, HSA, TSA và có tolerant cho lỗi gõ nhẹ.
 
 ## Chạy local
 Mở `index.html` bằng Live Server.
 
-## Quản lý tài liệu
-Thêm tài liệu trong Google Sheets theo các cột hiện có: `title`, `grade`, `subject`, `type`, `desc`, `fileUrl`, `fileSize`, `hot`, `featured`.
+## Deploy
+Commit vào branch `main`; Cloudflare Pages tự deploy.
 
-## Ghi chú
-Sitemap chứa domain placeholder `https://hdt-study.example/`; trước khi public, đổi domain này thành domain thật.
+## SEO
+- `robots.txt` ở root.
+- `sitemap.xml` + `sitemap.txt` ở root.
+- Google Search Console đã xác minh property `https://hdt-study.pages.dev/`.
 
-## Deploy miễn phí
-Xem `CLOUDFLARE-DEPLOY.md`.
+## Bản quyền / liên hệ
+Xem `ban-quyen.html`, `lien-he.html`, `dieu-khoan.html` và `chinh-sach-bao-mat.html`.
