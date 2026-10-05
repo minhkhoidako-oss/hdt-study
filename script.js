@@ -1189,3 +1189,475 @@ if (syncBtn) {
     }
   }, 1200);
 })();
+
+
+/* =========================================================
+   HDT FINAL SEARCH ENHANCEMENT
+   - Không đụng vào logic "Xem chi tiết"
+   - Tìm không dấu
+   - Từ đồng nghĩa
+   - Kỳ thi: THPTQG / ĐGNL / V-ACT / HSA / ĐGTD / TSA
+   - Cho phép lỗi gõ nhẹ
+   - Tìm theo title / subject / type / grade / desc / tags / exam
+   - Search realtime khi người dùng nhập
+   ========================================================= */
+
+(function initAdvancedSearch() {
+  const aliasMap = {
+    thptqg: [
+      'thptqg',
+      'tot nghiep thpt',
+      'thi tot nghiep',
+      'tot nghiep'
+    ],
+
+    'tot nghiep': [
+      'tot nghiep',
+      'tot nghiep thpt',
+      'thptqg'
+    ],
+
+    dgnl: [
+      'dgnl',
+      'danh gia nang luc',
+      'vac t',
+      'vac-t',
+      'v act',
+      'v-act',
+      'hsa'
+    ],
+
+    'danh gia nang luc': [
+      'danh gia nang luc',
+      'dgnl',
+      'vac t',
+      'vac-t',
+      'v act',
+      'v-act',
+      'hsa'
+    ],
+
+    'vac t': [
+      'vac t',
+      'vac-t',
+      'v act',
+      'v-act',
+      'dgnl',
+      'danh gia nang luc'
+    ],
+
+    'vac-t': [
+      'vac t',
+      'vac-t',
+      'v act',
+      'v-act',
+      'dgnl',
+      'danh gia nang luc'
+    ],
+
+    hsa: [
+      'hsa',
+      'dgnl',
+      'danh gia nang luc'
+    ],
+
+    dgtd: [
+      'dgtd',
+      'danh gia tu duy',
+      'tsa'
+    ],
+
+    'danh gia tu duy': [
+      'danh gia tu duy',
+      'dgtd',
+      'tsa'
+    ],
+
+    tsa: [
+      'tsa',
+      'dgtd',
+      'danh gia tu duy'
+    ],
+
+    'de thi': [
+      'de thi',
+      'de',
+      'luyen de',
+      'thi thu'
+    ],
+
+    'luyen de': [
+      'luyen de',
+      'de thi',
+      'thi thu'
+    ],
+
+    toan: [
+      'toan'
+    ],
+
+    'ngu van': [
+      'ngu van',
+      'van'
+    ],
+
+    'tieng anh': [
+      'tieng anh',
+      'english'
+    ],
+
+    'vat ly': [
+      'vat ly',
+      'ly'
+    ],
+
+    'hoa hoc': [
+      'hoa hoc',
+      'hoa'
+    ],
+
+    'sinh hoc': [
+      'sinh hoc',
+      'sinh'
+    ],
+
+    'lich su': [
+      'lich su',
+      'su'
+    ],
+
+    'dia ly': [
+      'dia ly',
+      'dia'
+    ],
+
+    'gdkt pl': [
+      'gdkt pl',
+      'gdkt&pl',
+      'kinh te phap luat'
+    ]
+  };
+
+  function normalize(value = '') {
+    return String(value)
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function tokenize(value = '') {
+    return normalize(value)
+      .split(/\s+/)
+      .filter(Boolean);
+  }
+
+  function levenshtein(a, b) {
+    if (a === b) return 0;
+    if (!a) return b.length;
+    if (!b) return a.length;
+
+    const prev = new Array(b.length + 1);
+
+    for (let j = 0; j <= b.length; j++) {
+      prev[j] = j;
+    }
+
+    for (let i = 1; i <= a.length; i++) {
+      let current = [i];
+
+      for (let j = 1; j <= b.length; j++) {
+        const insert = current[j - 1] + 1;
+        const remove = prev[j] + 1;
+        const replace =
+          prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1);
+
+        current[j] = Math.min(
+          insert,
+          remove,
+          replace
+        );
+      }
+
+      for (let j = 0; j <= b.length; j++) {
+        prev[j] = current[j];
+      }
+    }
+
+    return prev[b.length];
+  }
+
+  function fuzzyTokenMatch(token, hayTokens) {
+    if (!token || token.length < 4) {
+      return false;
+    }
+
+    const maxDistance =
+      token.length >= 7
+        ? 2
+        : 1;
+
+    return hayTokens.some(
+      candidate =>
+        candidate.length >= 4 &&
+        Math.abs(candidate.length - token.length) <= maxDistance &&
+        levenshtein(token, candidate) <= maxDistance
+    );
+  }
+
+  function expandToken(token) {
+    const normalized = normalize(token);
+
+    const aliases =
+      aliasMap[normalized] || [normalized];
+
+    return [
+      normalized,
+      ...aliases.map(normalize)
+    ].filter(Boolean);
+  }
+
+  function termMatches(
+    term,
+    normalizedHay,
+    hayTokens
+  ) {
+    const normalizedTerm = normalize(term);
+
+    if (!normalizedTerm) {
+      return true;
+    }
+
+    if (normalizedHay.includes(normalizedTerm)) {
+      return true;
+    }
+
+    if (normalizedTerm.includes(' ')) {
+      const words = normalizedTerm
+        .split(/\s+/)
+        .filter(Boolean);
+
+      if (
+        words.length &&
+        words.every(word =>
+          normalizedHay.includes(word)
+        )
+      ) {
+        return true;
+      }
+
+      return false;
+    }
+
+    return fuzzyTokenMatch(
+      normalizedTerm,
+      hayTokens
+    );
+  }
+
+  function advancedMatches(resource) {
+    const gradeOk =
+      activeGrade === 'all' ||
+      String(resource.grade) === String(activeGrade);
+
+    const subjectOk =
+      activeSubject === 'all' ||
+      normalize(resource.subject) ===
+        normalize(activeSubject);
+
+    const typeOk =
+      activeType === 'all' ||
+      normalize(resource.type) ===
+        normalize(activeType);
+
+    if (
+      !gradeOk ||
+      !subjectOk ||
+      !typeOk
+    ) {
+      return false;
+    }
+
+    const rawQuery =
+      String(query || '').trim();
+
+    if (!rawQuery) {
+      return true;
+    }
+
+    const normalizedHay = normalize(
+      [
+        resource.title,
+        resource.subject,
+        resource.type,
+        resource.grade,
+        resource.desc,
+
+        resource.tags,
+        resource.exam,
+        resource.examType,
+        resource.category,
+        resource.keywords,
+        resource.slug
+      ]
+        .filter(Boolean)
+        .join(' ')
+    );
+
+    const hayTokens =
+      tokenize(normalizedHay);
+
+    /*
+      Trường hợp người dùng nhập nguyên cụm:
+      "đánh giá năng lực"
+      "đánh giá tư duy"
+      "tốt nghiệp thpt"
+    */
+    const wholeQuery =
+      normalize(rawQuery);
+
+    const wholeAliases =
+      aliasMap[wholeQuery] || [];
+
+    if (
+      normalizedHay.includes(wholeQuery)
+    ) {
+      return true;
+    }
+
+    if (
+      wholeAliases.some(alias =>
+        normalizedHay.includes(normalize(alias))
+      )
+    ) {
+      return true;
+    }
+
+    /*
+      Trường hợp nhập nhiều từ:
+      "toan 12"
+      "lich su 12"
+      "de thi toan"
+      "dgnl 2026"
+    */
+    const tokens =
+      tokenize(rawQuery);
+
+    if (!tokens.length) {
+      return true;
+    }
+
+    return tokens.every(token => {
+      const alternatives =
+        expandToken(token);
+
+      return alternatives.some(
+        term =>
+          termMatches(
+            term,
+            normalizedHay,
+            hayTokens
+          )
+      );
+    });
+  }
+
+  /*
+    Thay matcher cũ bằng matcher mới,
+    KHÔNG đụng phần card/detail/modal.
+  */
+  matches = advancedMatches;
+
+  /*
+    Tìm realtime nhưng có debounce nhẹ
+    để không render liên tục khi đang gõ.
+  */
+  let searchTimer = null;
+
+  function runSearch({
+    scroll = true
+  } = {}) {
+    query =
+      String(searchInput?.value || '').trim();
+
+    shown = query ? 9 : 6;
+
+    if (
+      scroll &&
+      document.getElementById('tai-lieu')
+    ) {
+      document
+        .getElementById('tai-lieu')
+        .scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+    }
+
+    render();
+  }
+
+  if (searchInput) {
+    searchInput.placeholder =
+      'Tìm tài liệu, môn học, lớp, ĐGNL, TSA...';
+
+    /*
+      Capture phase để chặn listener search cũ
+      đang nằm trong script.js.
+    */
+    searchInput.addEventListener(
+      'input',
+      event => {
+        event.stopImmediatePropagation();
+
+        clearTimeout(searchTimer);
+
+        searchTimer = setTimeout(() => {
+          runSearch({
+            scroll: false
+          });
+        }, 160);
+      },
+      true
+    );
+
+    searchInput.addEventListener(
+      'keydown',
+      event => {
+        if (event.key !== 'Enter') {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        clearTimeout(searchTimer);
+
+        runSearch({
+          scroll: true
+        });
+      },
+      true
+    );
+  }
+
+  if (searchBtn) {
+    searchBtn.addEventListener(
+      'click',
+      event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        clearTimeout(searchTimer);
+
+        runSearch({
+          scroll: true
+        });
+      },
+      true
+    );
+  }
+})();
