@@ -13,6 +13,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="hdt-v23-ui.css">
+
+<style>
+.v23-feed-status{margin:0 0 18px;padding:10px 14px;border:1px solid #dbe6f5;border-radius:12px;background:#fff;color:#64748b;font-size:13px}
+.v23-feed-status.is-ok{border-color:#cfead9;background:#f4fcf7;color:#23734a}
+.v23-feed-status.is-warning{border-color:#f3d3d3;background:#fff8f8;color:#a33a3a}
+</style>
 </head>
 <body class="hub-page v23-page">
   <div class="topbar"><div class="container topbar-inner"><span class="topbar-brand">HDT Study — Kho tài liệu ôn thi THPT miễn phí</span><a class="topbar-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo nhanh · 0976 366 683</a></div></div>
@@ -32,6 +38,7 @@
 
     <section class="v23-section"><div class="container">
       <div class="v23-section-head"><div><div class="v23-kicker">CHỌN KỲ THI</div><h2>6 kho luyện thi rõ ràng</h2><p class="v23-lead">Số lượng tài liệu bên dưới được đọc trực tiếp từ Google Sheets hiện tại của HDT. Khi bạn thêm tài liệu có cột <strong>exam</strong>, số lượng sẽ tự tăng.</p></div></div>
+      <div id="examFeedStatus" class="v23-feed-status" role="status" aria-live="polite">Đang kiểm tra dữ liệu Google Sheets…</div>
       <div class="v23-exam-grid">
         <article class="v23-exam-card" style="--accent:#3972ef;--soft:#edf4ff"><div class="v23-exam-top"><div class="v23-exam-mark">TN</div><span class="v23-count-badge" data-exam-count="tn-thpt">Đang đếm...</span></div><h3>Tốt nghiệp THPT</h3><p>Kho tài liệu ôn theo môn, chuyên đề và luyện đề cho kỳ thi tốt nghiệp.</p><div class="v23-chips"><a class="v23-chip link" href="danh-muc.html?exam=tn-thpt">Ôn nền</a><a class="v23-chip link" href="danh-muc.html?exam=tn-thpt&type=Chuyên%20đề">Chuyên đề</a><a class="v23-chip link" href="danh-muc.html?exam=tn-thpt&type=Luyện%20đề">Luyện đề</a><a class="v23-chip link" href="danh-muc.html?exam=tn-thpt&type=Đề%20thi">Đề thi</a></div><div class="v23-actions"><a class="v23-primary" href="danh-muc.html?exam=tn-thpt">Xem kho tài liệu →</a></div></article>
         <article class="v23-exam-card" style="--accent:#8057d8;--soft:#f3efff"><div class="v23-exam-top"><div class="v23-exam-mark">V-ACT</div><span class="v23-count-badge" data-exam-count="v-act">Đang đếm...</span></div><h3>ĐGNL ĐHQG-HCM (V-ACT)</h3><p>Kho luyện thi đánh giá năng lực, có thể chia theo phần kiến thức và dạng luyện.</p><div class="v23-chips"><a class="v23-chip link" href="danh-muc.html?exam=v-act">Tất cả</a><a class="v23-chip link" href="danh-muc.html?exam=v-act&type=Chuyên%20đề">Chuyên đề</a><a class="v23-chip link" href="danh-muc.html?exam=v-act&type=Luyện%20đề">Luyện đề</a><a class="v23-chip link" href="danh-muc.html?exam=v-act&type=Đề%20thi">Đề thi</a></div><div class="v23-actions"><a class="v23-primary" href="danh-muc.html?exam=v-act">Xem kho tài liệu →</a><a class="v23-secondary" href="https://cetqa.vnuhcm.edu.vn/danh-gia-nang-luc/c-10/ky-thi-nam-2026-cid-8" target="_blank" rel="noopener noreferrer">Thông tin chính thức ↗</a></div></article>
@@ -48,14 +55,14 @@
   <footer class="footer"><div class="container footer-grid"><div><a class="brand footer-brand" href="index.html"><span class="brand-mark">HDT</span><span class="brand-copy"><strong>HDT Study</strong><small>THPT · FREE RESOURCES</small></span></a><p class="footer-copy">Kho tài liệu ôn thi THPT gọn gàng, dễ tìm và ưu tiên trải nghiệm học tập.</p></div><div><strong>Khám phá</strong><a href="index.html#tai-lieu">Tài liệu</a><a href="ky-thi.html">Đề thi & kỳ thi</a><a href="mon-hoc.html">Môn học</a></div><div><strong>Hỗ trợ</strong><a href="index.html#goc-hoc">Góc học tập</a><a href="lien-he.html">Liên hệ</a><a href="ban-quyen.html">Bản quyền</a><a href="dieu-khoan.html">Điều khoản</a></div><div><strong>Liên hệ nhanh</strong><a class="footer-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo: 0976 366 683 ↗</a></div></div><div class="container footer-bottom"><span>© <span id="year"></span> HDT Study.</span><span>Made for Vietnamese students.</span></div></footer>
   <script src="config.js"></script>
   <script>
-    const normalize = v => String(v ?? '')
-      .replace(/^\uFEFF/, '')
+    const normalize = (value) => String(value ?? '')
+      .replace(/^\\uFEFF/, '')
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[\\u0300-\\u036f]/g, '')
       .replace(/đ/g, 'd')
       .replace(/[^a-z0-9]+/g, ' ')
-      .replace(/\s+/g, ' ')
+      .replace(/\\s+/g, ' ')
       .trim();
 
     function parseCsv(text) {
@@ -78,8 +85,8 @@
         } else if (ch === ',' && !quoted) {
           row.push(cell);
           cell = '';
-        } else if ((ch === '\n' || ch === '\r') && !quoted) {
-          if (ch === '\r' && next === '\n') i++;
+        } else if ((ch === '\\n' || ch === '\\r') && !quoted) {
+          if (ch === '\\r' && next === '\\n') i++;
           row.push(cell);
           cell = '';
           if (row.some(v => String(v).trim() !== '')) rows.push(row);
@@ -106,106 +113,108 @@
       });
     }
 
-    function examCodesFromValue(value) {
-      const raw = String(value ?? '').trim();
-      if (!raw) return [];
+    function normalizeExamCode(value) {
+      const n = normalize(value);
 
-      const parts = raw
+      if (
+        ['tn thpt', 'tn', 'thptqg', 'tot nghiep', 'tot nghiep thpt', 'thi tot nghiep'].includes(n) ||
+        n.includes('tot nghiep thpt')
+      ) return 'tn-thpt';
+
+      if (
+        ['v act', 'vact', 'v act 2026'].includes(n) ||
+        n.includes('v act') ||
+        n.includes('dgnl dhqg hcm') ||
+        n.includes('dhqg hcm')
+      ) return 'v-act';
+
+      if (
+        n === 'hsa' ||
+        n.includes('hsa ') ||
+        n.includes('dgnl dhqg hn') ||
+        n.includes('dhqg hn') ||
+        n.includes('dhqg ha noi')
+      ) return 'hsa';
+
+      if (
+        n === 'tsa' ||
+        n.includes('tsa') ||
+        n === 'dgtd' ||
+        n.includes('danh gia tu duy') ||
+        n.includes('bach khoa ha noi')
+      ) return 'tsa';
+
+      if (
+        n === 'spt' ||
+        n.includes('dgnl spt') ||
+        n.includes('su pham ha noi') ||
+        n.includes('dai hoc su pham ha noi')
+      ) return 'spt';
+
+      if (
+        n === 'hsca' ||
+        n === 'h sca' ||
+        n.includes('hsca') ||
+        n.includes('h sca') ||
+        n.includes('h-sca') ||
+        n.includes('dgnl chuyen biet') ||
+        n.includes('su pham tphcm') ||
+        n.includes('su pham thanh pho ho chi minh')
+      ) return 'hsca';
+
+      return '';
+    }
+
+    function splitExamValues(value) {
+      return String(value ?? '')
         .split(/[,;|/]+/)
-        .map(normalize)
+        .map(v => v.trim())
         .filter(Boolean);
+    }
 
-      const codes = new Set();
-
-      for (const n of parts) {
-        if (
-          n === 'hsa' ||
-          n.includes('dgnl dhqg hn') ||
-          n.includes('dgnl dhqg ha noi') ||
-          n.includes('dhqg hn') ||
-          n.includes('dhqg ha noi') ||
-          n.includes('hsa')
-        ) {
-          codes.add('hsa');
-        }
-
-        if (
-          n === 'v act' ||
-          n === 'vact' ||
-          n.includes('v act') ||
-          n.includes('dgnl dhqg hcm') ||
-          n.includes('dhqg hcm')
-        ) {
-          codes.add('v-act');
-        }
-
-        if (
-          n === 'tsa' ||
-          n.includes('tsa') ||
-          n === 'dgtd' ||
-          n.includes('danh gia tu duy') ||
-          n.includes('bach khoa ha noi')
-        ) {
-          codes.add('tsa');
-        }
-
-        if (
-          n === 'spt' ||
-          n.includes('spt') ||
-          n.includes('dgnl spt') ||
-          n.includes('su pham ha noi') ||
-          n.includes('dai hoc su pham ha noi')
-        ) {
-          codes.add('spt');
-        }
-
-        if (
-          n === 'hsca' ||
-          n === 'h sca' ||
-          n.includes('h sca') ||
-          n.includes('h-sca') ||
-          n.includes('dgnl chuyen biet') ||
-          n.includes('su pham tphcm') ||
-          n.includes('su pham thanh pho ho chi minh')
-        ) {
-          codes.add('hsca');
-        }
-
-        if (
-          n === 'tn thpt' ||
-          n === 'tn' ||
-          n === 'thptqg' ||
-          n.includes('tot nghiep') ||
-          n.includes('tot nghiep thpt') ||
-          n.includes('thi tot nghiep')
-        ) {
-          codes.add('tn-thpt');
-        }
-      }
-
-      return [...codes];
+    function getExamHeaderKeys(sampleRow) {
+      return Object.keys(sampleRow || {}).filter(key => {
+        const k = normalize(key);
+        return (
+          k === 'exam' ||
+          k.includes('exam ') ||
+          k === 'ky thi' ||
+          k === 'ki thi' ||
+          k.includes('ky thi')
+        );
+      });
     }
 
     function getRowExamCodes(row) {
-      // Prefer the explicit exam column. It is the source of truth.
-      const explicit = examCodesFromValue(
-        row.exam || row.examtype || row.kythi || row.ky_thi || ''
-      );
+      const examKeys = getExamHeaderKeys(row);
+      const explicitValues = examKeys.flatMap(key => splitExamValues(row[key]));
 
-      if (explicit.length) return explicit;
+      const explicitCodes = explicitValues
+        .map(normalizeExamCode)
+        .filter(Boolean);
 
-      // Backward-compatible fallback for older rows without exam metadata.
-      const fallback = examCodesFromValue(
-        [row.title, row.desc, row.type, row.tags]
-          .filter(Boolean)
-          .join(' ')
-      );
+      if (explicitCodes.length) return [...new Set(explicitCodes)];
 
-      return fallback;
+      // Backward-compatible fallback for old rows without exam metadata.
+      return [
+        row.title,
+        row.desc,
+        row.description,
+        row.type,
+        row.category,
+        row.tags
+      ]
+        .filter(Boolean)
+        .flatMap(splitExamValues)
+        .map(normalizeExamCode)
+        .filter(Boolean)
+        .filter((code, index, arr) => arr.indexOf(code) === index);
     }
 
     async function loadCounts() {
       const badges = [...document.querySelectorAll('[data-exam-count]')];
+      const status = document.getElementById('examFeedStatus');
+
       const counts = {
         'tn-thpt': 0,
         'v-act': 0,
@@ -216,46 +225,74 @@
       };
 
       try {
-        const sep = String(GOOGLE_SHEET_CSV_URL).includes('?') ? '&' : '?';
-        const url = `${GOOGLE_SHEET_CSV_URL}${sep}_hdt=${Date.now()}`;
+        const feed = String(window.GOOGLE_SHEET_CSV_URL || '').trim();
+        if (!feed) throw new Error('GOOGLE_SHEET_CSV_URL is empty');
+
+        const separator = feed.includes('?') ? '&' : '?';
+        const url = `${feed}${separator}_hdt_counter=${Date.now()}`;
 
         const response = await fetch(url, {
           cache: 'no-store',
           headers: { 'Accept': 'text/csv,text/plain,*/*' }
         });
 
-        if (!response.ok) throw new Error(`CSV ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`CSV HTTP ${response.status}`);
+        }
 
         const csv = await response.text();
-        const rows = parseCsv(csv);
 
-        rows
-          .filter(row => row.title)
-          .forEach(row => {
-            const codes = getRowExamCodes(row);
+        if (/^\\s*<!doctype html|^\\s*<html/i.test(csv)) {
+          throw new Error('Feed trả về HTML thay vì CSV');
+        }
 
-            // Count each document once per exam.
-            new Set(codes).forEach(code => {
-              if (Object.prototype.hasOwnProperty.call(counts, code)) {
-                counts[code] += 1;
-              }
-            });
+        const rows = parseCsv(csv).filter(row =>
+          Object.values(row).some(value => String(value).trim() !== '')
+        );
+
+        if (!rows.length) throw new Error('CSV không có dòng dữ liệu');
+
+        const sample = rows[0];
+        const examKeys = getExamHeaderKeys(sample);
+
+        rows.forEach(row => {
+          const codes = getRowExamCodes(row);
+          codes.forEach(code => {
+            if (Object.prototype.hasOwnProperty.call(counts, code)) {
+              counts[code]++;
+            }
           });
+        });
 
         badges.forEach(badge => {
           const code = badge.dataset.examCount;
           badge.textContent = `${counts[code] ?? 0} tài liệu`;
         });
 
-        console.info('[HDT] Exam counters', {
-          rows: rows.filter(row => row.title).length,
-          counts
+        status.textContent =
+          `Đã đọc ${rows.length} dòng · cột exam: ${examKeys.length ? 'CÓ' : 'KHÔNG'} · ` +
+          `TN ${counts['tn-thpt']} · V-ACT ${counts['v-act']} · HSA ${counts['hsa']} · ` +
+          `TSA ${counts['tsa']} · SPT ${counts['spt']} · H-SCA ${counts['hsca']}`;
+
+        status.classList.toggle('is-ok', examKeys.length > 0);
+        status.classList.toggle('is-warning', examKeys.length === 0);
+
+        console.info('[HDT] exam diagnostic', {
+          rows: rows.length,
+          examKeys,
+          counts,
+          sampleRow: rows[0]
         });
       } catch (error) {
-        console.error('[HDT] Exam counter error:', error);
+        console.error('[HDT] exam counter error:', error);
+
         badges.forEach(badge => {
           badge.textContent = 'Không tải được';
         });
+
+        status.textContent =
+          `Không đọc được Google Sheets: ${error.message || 'lỗi không xác định'}`;
+        status.classList.add('is-warning');
       }
     }
 
