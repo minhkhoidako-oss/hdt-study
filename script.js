@@ -898,3 +898,294 @@ if (syncBtn) {
 (async function init() {
   await syncResources();
 })();
+/* HDT FINAL DETAIL UX FIX
+   Prevent full-page reload when clicking "Xem chi tiết".
+   Keeps shareable ?slug=... URLs via History API and opens the existing modal.
+*/
+(function () {
+  function findResourceBySlug(slug) {
+    if (!slug || !Array.isArray(resourceData)) return null;
+    const normalized = String(slug).trim().toLowerCase();
+
+    return resourceData.find((r) => {
+      const candidate = r.slug || slugifyVi(r.title);
+      return String(candidate).toLowerCase() === normalized;
+    }) || null;
+  }
+
+  function detailUrlFor(r) {
+    const slug = r?.slug || slugifyVi(r?.title || '');
+    return `tai-lieu?slug=${encodeURIComponent(slug)}`;
+  }
+
+  function updateDocumentSeo(r) {
+    if (!r) return;
+
+    const title = `${r.title} | HDT Study`;
+
+    const description =
+      r.desc ||
+      `Tài liệu ${r.subject || ''} lớp ${r.grade || ''} miễn phí trên HDT Study.`;
+
+    const canonicalUrl =
+      `${window.location.origin}/${detailUrlFor(r).replace(/^\//, '')}`;
+
+    document.title = title;
+
+    const descriptionMeta =
+      document.querySelector('meta[name="description"]');
+
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute('content', description);
+    }
+
+    let canonical =
+      document.querySelector('link[rel="canonical"]');
+
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+
+    canonical.href = canonicalUrl;
+
+    const ogTitle =
+      document.querySelector('meta[property="og:title"]');
+
+    const ogDescription =
+      document.querySelector('meta[property="og:description"]');
+
+    const ogUrl =
+      document.querySelector('meta[property="og:url"]');
+
+    if (ogTitle) {
+      ogTitle.setAttribute('content', title);
+    }
+
+    if (ogDescription) {
+      ogDescription.setAttribute('content', description);
+    }
+
+    if (ogUrl) {
+      ogUrl.setAttribute('content', canonicalUrl);
+    }
+  }
+
+  function restoreListSeo() {
+    document.title =
+      'HDT Study — Tài liệu ôn thi THPTQG miễn phí';
+
+    const descriptionMeta =
+      document.querySelector('meta[name="description"]');
+
+    if (descriptionMeta) {
+      descriptionMeta.setAttribute(
+        'content',
+        'HDT Study – kho tài liệu ôn thi THPTQG miễn phí, đề thi, chuyên đề và tài liệu học tập cho học sinh THPT.'
+      );
+    }
+
+    const canonical =
+      document.querySelector('link[rel="canonical"]');
+
+    if (canonical) {
+      canonical.href = `${window.location.origin}/`;
+    }
+
+    const ogTitle =
+      document.querySelector('meta[property="og:title"]');
+
+    const ogDescription =
+      document.querySelector('meta[property="og:description"]');
+
+    const ogUrl =
+      document.querySelector('meta[property="og:url"]');
+
+    if (ogTitle) {
+      ogTitle.setAttribute(
+        'content',
+        'HDT Study — Tài liệu ôn thi THPTQG miễn phí'
+      );
+    }
+
+    if (ogDescription) {
+      ogDescription.setAttribute(
+        'content',
+        'Kho tài liệu, đề thi và chuyên đề THPTQG miễn phí cho học sinh.'
+      );
+    }
+
+    if (ogUrl) {
+      ogUrl.setAttribute(
+        'content',
+        `${window.location.origin}/`
+      );
+    }
+  }
+
+  function openFromSlug(slug, push) {
+    const r = findResourceBySlug(slug);
+
+    if (!r) return false;
+
+    if (push) {
+      history.pushState(
+        {
+          hdtDocument:
+            r.slug || slugifyVi(r.title)
+        },
+        '',
+        detailUrlFor(r)
+      );
+    }
+
+    openDocument(r.id);
+    updateDocumentSeo(r);
+
+    return true;
+  }
+
+  function closeAndCleanUrl() {
+    closeDocument();
+
+    if (
+      new URLSearchParams(window.location.search).has('slug')
+    ) {
+      history.replaceState({}, '', 'tai-lieu');
+      restoreListSeo();
+    }
+  }
+
+  // Capture clicks before the old card handlers run,
+  // so no full-page navigation occurs.
+  document.addEventListener(
+    'click',
+    function (event) {
+      const detailBtn =
+        event.target.closest?.('.resource-detail-btn');
+
+      const card =
+        event.target.closest?.('.resource-card');
+
+      if (detailBtn) {
+        const resource = resourceData.find(
+          (r) =>
+            String(r.id) ===
+            String(detailBtn.dataset.docId)
+        );
+
+        if (!resource) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        openFromSlug(
+          resource.slug ||
+            slugifyVi(resource.title),
+          true
+        );
+
+        return;
+      }
+
+      // Preserve download links and other interactive elements.
+      if (
+        !card ||
+        event.target.closest(
+          'a,button,input,select,textarea,[data-stop-card="true"]'
+        )
+      ) {
+        return;
+      }
+
+      const resource = resourceData.find(
+        (r) =>
+          String(r.id) ===
+          String(card.dataset.docId)
+      );
+
+      if (!resource) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      openFromSlug(
+        resource.slug ||
+          slugifyVi(resource.title),
+        true
+      );
+    },
+    true
+  );
+
+  docModalClose.addEventListener(
+    'click',
+    function () {
+      if (
+        new URLSearchParams(window.location.search).has(
+          'slug'
+        )
+      ) {
+        history.replaceState({}, '', 'tai-lieu');
+        restoreListSeo();
+      }
+    }
+  );
+
+  window.addEventListener(
+    'popstate',
+    function () {
+      const slug =
+        new URLSearchParams(
+          window.location.search
+        ).get('slug');
+
+      if (slug) {
+        openFromSlug(slug, false);
+      } else {
+        closeDocument();
+        restoreListSeo();
+      }
+    }
+  );
+
+  // If a user opens a shareable ?slug=... URL directly,
+  // show the matching document modal after Google Sheets data renders.
+  const gridEl =
+    document.getElementById('resourceGrid');
+
+  if (gridEl) {
+    const observer =
+      new MutationObserver(function () {
+        const slug =
+          new URLSearchParams(
+            window.location.search
+          ).get('slug');
+
+        if (!slug) return;
+
+        if (openFromSlug(slug, false)) {
+          observer.disconnect();
+        }
+      });
+
+    observer.observe(gridEl, {
+      childList: true
+    });
+  }
+
+  // Initial fallback for a very fast/local render.
+  setTimeout(function () {
+    const slug =
+      new URLSearchParams(
+        window.location.search
+      ).get('slug');
+
+    if (slug) {
+      openFromSlug(slug, false);
+    }
+  }, 1200);
+})();
