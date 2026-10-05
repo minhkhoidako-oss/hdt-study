@@ -264,3 +264,104 @@ body.modal-open{overflow:hidden}
     display: none;
   }
 }
+
+/* ===== HDT HEADER LOGO FIX ===== */
+
+.header .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 180px;
+  max-width: 280px;
+  text-decoration: none;
+}
+
+.header .brand-icon {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  min-height: 46px !important;
+  max-height: 46px !important;
+
+  display: block !important;
+  flex: 0 0 46px !important;
+
+  object-fit: cover;
+  object-position: center;
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.20);
+}
+
+.header .brand-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.05;
+}
+
+.header .brand-copy strong {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  color: #12213d;
+  white-space: nowrap;
+}
+
+.header .brand-copy small {
+  margin-top: 5px;
+  color: #8190a8;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 680px) {
+  .header .brand {
+    gap: 9px;
+    min-width: 0;
+    max-width: 210px;
+  }
+
+  .header .brand-icon {
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    flex-basis: 40px !important;
+    border-radius: 12px;
+  }
+
+  .header .brand-copy strong {
+    font-size: 16px;
+  }
+
+  .header .brand-copy small {
+    font-size: 7px;
+    letter-spacing: 0.6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header .brand-copy small {
+    display: none;
+  }
+
+  .header .brand-icon {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    max-width: 38px !important;
+    min-height: 38px !important;
+    max-height: 38px !important;
+    flex-basis: 38px !important;
+  }
+}
