@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sau khi Cloudflare cấp URL website, thay https://YOUR-SITE.pages.dev bằng URL thật. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://YOUR-SITE.pages.dev/</loc></url>
+  <url><loc>https://YOUR-SITE.pages.dev/tai-lieu.html?slug=vecto-va-he-truc-toa-do-trong-khong-gian-toan-12</loc></url>
+  <url><loc>https://YOUR-SITE.pages.dev/tai-lieu.html?slug=tom-tat-kien-thuc-lich-su-12</loc></url>
+  <url><loc>https://YOUR-SITE.pages.dev/tai-lieu.html?slug=tong-hop-toan-bo-kien-thuc-sinh-hoc-12</loc></url>
+</urlset>

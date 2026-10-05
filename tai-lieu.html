@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HDT Study — Tài liệu</title>
+  <meta name="description" content="Tài liệu ôn thi THPT miễn phí từ HDT Study.">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .detail-page{min-height:100vh;background:linear-gradient(180deg,#f6f9ff 0%,#fff 46%);padding-bottom:64px}
+    .detail-wrap{width:min(1120px,calc(100% - 32px));margin:0 auto;padding:30px 0 0}
+    .detail-breadcrumb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:#71809a;font-size:13px;margin:12px 0 18px}
+    .detail-breadcrumb a{color:#356fe3;text-decoration:none;font-weight:700}
+    .detail-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.72fr);gap:22px;align-items:start}
+    .detail-main,.detail-side{background:#fff;border:1px solid #e4ebf5;border-radius:28px;box-shadow:0 20px 60px rgba(28,67,119,.08)}
+    .detail-main{padding:32px}
+    .detail-kicker{display:inline-flex;align-items:center;gap:7px;border:1px solid #dce8ff;background:#f5f8ff;color:#376fd8;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900;letter-spacing:.3px;text-transform:uppercase}
+    .detail-main h1{font-size:42px;line-height:1.12;letter-spacing:-1.2px;margin:16px 0 14px;color:#11213d}
+    .detail-desc{font-size:16px;line-height:1.8;color:#64748b;margin:0 0 20px;max-width:820px}
+    .detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}.detail-meta span{padding:7px 10px;border-radius:999px;background:#f4f7fb;color:#53647e;font-size:12px;font-weight:800}
+    .detail-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 26px}
+    .detail-actions a,.detail-actions button{min-height:48px;border-radius:14px;padding:0 16px;border:1px solid #dbe5f2;background:#fff;color:#30435f;font:800 13px/1 inherit;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+    .detail-actions .primary-btn{border-color:transparent;background:#2563eb;color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.22)}
+    .detail-actions .secondary-btn{background:#eff6ff;color:#1d5fd1;border-color:#d6e6ff}
+    .detail-actions .zalo-btn{background:#eef8ff;color:#0d67c9;border-color:#cfe9ff}
+    .detail-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 26px}
+    .detail-info{border:1px solid #e9eef5;background:#fbfdff;border-radius:16px;padding:14px}.detail-info small{display:block;color:#94a3b8;font-size:10px;margin-bottom:6px}.detail-info strong{color:#263752;font-size:13px}
+    .detail-section{border-top:1px solid #edf1f6;padding-top:24px;margin-top:24px}.detail-section h2{font-size:20px;letter-spacing:-.3px;margin:0 0 10px}.detail-section p{color:#62748e;line-height:1.75;font-size:14px}
+    .detail-side{padding:22px;position:sticky;top:18px}.detail-preview{min-height:330px;border-radius:22px;background:linear-gradient(135deg,#eaf2ff,#f5f0ff);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;position:relative;overflow:hidden}.detail-preview::before,.detail-preview::after{content:"";position:absolute;border-radius:999px;background:#4f8df5;opacity:.08}.detail-preview::before{width:220px;height:220px;right:-70px;bottom:-90px}.detail-preview::after{width:160px;height:160px;left:-70px;top:-70px}.detail-preview-icon{width:112px;height:112px;border-radius:28px;background:#fff;box-shadow:0 16px 35px rgba(36,74,126,.13);display:flex;align-items:center;justify-content:center;color:#2d72ed;position:relative;z-index:1}.detail-preview-icon svg{width:58px;height:58px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.detail-preview small{position:relative;z-index:1;font-size:11px;font-weight:900;letter-spacing:.8px;color:#61718b;text-transform:uppercase}.detail-tip{margin-top:14px;border-radius:18px;background:#f8fbff;border:1px solid #e3edf9;padding:14px;color:#61718b;font-size:12px;line-height:1.65}.detail-tip strong{color:#26415e}
+    .detail-share{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.detail-share button{border:1px solid #dce6f2;background:#fff;border-radius:12px;padding:10px 12px;color:#3b4d66;font:800 12px/1 inherit;cursor:pointer}.detail-status{font-size:11px;font-weight:800;color:#5f718a;margin-top:10px}.detail-status.ok{color:#12935a}
+    .detail-footer{margin-top:24px;padding:18px 20px;border-radius:22px;background:#0f1d33;color:#fff;display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}.detail-footer strong{font-size:14px}.detail-footer span{display:block;color:#a9bbd4;font-size:11px;margin-top:4px}.detail-footer a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:#2d75ee;color:#fff;text-decoration:none;font-size:12px;font-weight:900}
+    @media (max-width:900px){.detail-grid{grid-template-columns:1fr}.detail-side{position:static}.detail-main h1{font-size:34px}}
+    @media (max-width:640px){.detail-wrap{width:min(100% - 20px,1120px)}.detail-main{padding:22px;border-radius:22px}.detail-side{padding:14px;border-radius:22px}.detail-main h1{font-size:29px}.detail-desc{font-size:14px}.detail-info-grid{grid-template-columns:1fr 1fr}.detail-actions>*{flex:1 1 100%}.detail-preview{min-height:230px}.detail-footer{padding:16px}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html" aria-label="HDT Study">
+        <span class="brand-mark">HDT</span><span class="brand-copy"><strong>HDT Study</strong><small>THPT · FREE RESOURCES</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="Điều hướng chính">
+        <a href="index.html#tai-lieu">Tài liệu</a><a href="index.html#de-thi">Đề thi</a><a href="index.html#mon-hoc">Môn học</a><a href="index.html#lo-trinh">Lộ trình</a><a href="index.html#goc-hoc">Góc học tập</a>
+      </nav>
+      <a class="zalo-header" href="https://zalo.me/0976366683" target="_blank" rel="noreferrer"><span class="zalo-dot">Z</span>Zalo HDT</a>
+    </div>
+  </header>
+  <main class="detail-page">
+    <div class="detail-wrap">
+      <div class="detail-breadcrumb"><a href="index.html">Trang chủ</a><span>→</span><span>Tài liệu</span><span>→</span><strong id="crumbTitle">Đang tải...</strong></div>
+      <div id="detailRoot"></div>
+    </div>
+  </main>
+  <script src="config.js"></script>
+  <script>
+    const SUBJECT_TONES={
+      'Toán':['#3678ef','#edf5ff'],'Ngữ Văn':['#df607f','#fff1f5'],'Tiếng Anh':['#6267d8','#f0f1ff'],'Vật Lý':['#199db4','#eafaff'],
+      'Hóa Học':['#eb8a35','#fff5e9'],'Sinh Học':['#2eaa70','#ecfbf3'],'Địa Lý':['#c99224','#fff8e3'],'Lịch Sử':['#895fe1','#f3efff'],'GDKT&PL':['#159b8d','#eafbf8']
+    };
+    const ICONS={
+      'Toán':'<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="7" width="34" height="34" rx="10"/><path d="M15 16h18M15 23h18M15 30h18M22 13v22"/></svg>',
+      'Ngữ Văn':'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 9h17a7 7 0 0 1 7 7v23H19a7 7 0 0 1-7-7V9Z"/><path d="M36 16v23H19"/><path d="M19 18h11M19 24h9M19 30h11"/></svg>',
+      'Tiếng Anh':'<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="9" width="36" height="27" rx="7"/><path d="M12 15h10M27 15h7M12 22h24M12 29h15M16 40h16"/></svg>',
+      'Vật Lý':'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="4"/><ellipse cx="24" cy="24" rx="17" ry="7"/><ellipse cx="24" cy="24" rx="17" ry="7" transform="rotate(60 24 24)"/><ellipse cx="24" cy="24" rx="17" ry="7" transform="rotate(120 24 24)"/></svg>',
+      'Hóa Học':'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M18 8h12M21 8v11L12 34a6 6 0 0 0 5 8h14a6 6 0 0 0 5-8l-9-15V8"/><path d="M15 31h18"/></svg>',
+      'Sinh Học':'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 12c11 4 18 12 18 22 0 7-4 10-9 10s-9-5-9-12c0-8 1-14 0-20Z"/><path d="M33 16c-7 3-12 8-17 17M24 16l-1 22"/></svg>',
+      'Địa Lý':'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M7 24h34M24 7c5 5 7 11 7 17s-2 12-7 17M24 7c-5 5-7 11-7 17s2 12 7 17M12 14c4 2 8 3 12 3s8-1 12-3"/></svg>',
+      'Lịch Sử':'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 12h15a7 7 0 0 1 7 7v19H17a7 7 0 0 1-7-7V12Z"/><path d="M39 12H24a7 7 0 0 0-7 7v19h15a7 7 0 0 0 7-7V12Z"/><path d="M18 19h8M18 25h9M30 19h3M30 25h3"/></svg>',
+      'GDKT&PL':'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 16h30L24 9 9 16Z"/><path d="M13 18v15M21 18v15M27 18v15M35 18v15M8 37h32M7 40h34"/></svg>'
+    };
+    function normalize(s=''){return String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').trim()}
+    function parseCsv(text){const rows=[];let row=[],cell='',q=false;for(let i=0;i<text.length;i++){const c=text[i],n=text[i+1];if(c==='"'){if(q&&n==='"'){cell+='"';i++;}else q=!q}else if(c===','&&!q){row.push(cell);cell=''}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cell);cell='';if(row.some(x=>x.trim()!==''))rows.push(row);row=[]}else cell+=c}if(cell!==''||row.length){row.push(cell);if(row.some(x=>x.trim()!==''))rows.push(row)}if(!rows.length)return[];const h=rows[0].map(x=>x.trim().toLowerCase());return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))}
+    function driveId(url=''){const m=String(url).match(/\/d\/([\w-]+)/);return m?m[1]:''}
+    function driveView(u){return u||(driveId(u)?`https://drive.google.com/file/d/${driveId(u)}/view`:'')}
+    function driveDownload(u){const id=driveId(u);return id?`https://drive.google.com/uc?export=download&id=${id}`:u}
+    async function getRows(){const res=await fetch(GOOGLE_SHEET_CSV_URL,{cache:'no-store'});if(!res.ok)throw new Error('Không thể tải dữ liệu');return parseCsv(await res.text())}
+    function slug(v=''){return String(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,90)}
+    function esc(v=''){return String(v).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[m]||m))}
+    async function init(){
+      const params=new URLSearchParams(location.search); const wanted=params.get('slug')||params.get('id')||''; const root=document.getElementById('detailRoot');
+      if(!wanted){root.innerHTML='<div class="detail-main"><h1>Không tìm thấy tài liệu</h1><p class="detail-desc">Hãy quay lại trang chủ và chọn một tài liệu.</p><a class="primary-btn" href="index.html#tai-lieu">Quay lại tài liệu</a></div>';return}
+      try{
+        const rows=await getRows();
+        const all=rows.filter(r=>r.title).map((r,i)=>{const subject=(r.subject||'Khác').trim(); const url=r.fileUrl||r.url||r.fileurl||''; return {id:r.id||`sheet-${i+1}`,title:r.title,grade:r.grade||'12',subject,type:r.type||r.category||'Tài liệu',desc:r.desc||r.description||'Tài liệu học tập miễn phí trên HDT Study.',file:url,fileSize:r.fileSize||r.filesize||'PDF',slug:r.slug||slug(r.title),hot:String(r.hot).toLowerCase()==='true',featured:String(r.featured).toLowerCase()==='true'} });
+        const r=all.find(x=>x.slug===wanted||String(x.id)===wanted||normalize(x.title)===normalize(wanted));
+        if(!r){root.innerHTML='<div class="detail-main"><h1>Không tìm thấy tài liệu</h1><p class="detail-desc">Tài liệu này chưa có trong Google Sheets hiện tại.</p><a class="primary-btn" href="index.html#tai-lieu">← Quay lại kho tài liệu</a></div>';return}
+        document.title=`${r.title} — HDT Study`;
+        document.querySelector('meta[name="description"]').setAttribute('content',r.desc.slice(0,155));
+        document.getElementById('crumbTitle').textContent=r.title;
+        const [accent,soft]=SUBJECT_TONES[r.subject]||['#3678ef','#edf5ff'];
+        const icon=ICONS[r.subject]||'<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 6h18l8 8v28H12a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4Z"/><path d="M30 6v9h8M15 24h18M15 30h18M15 36h11"/></svg>';
+        const view=driveView(r.file),dl=driveDownload(r.file); const has=Boolean(r.file);
+        root.innerHTML=`<div class="detail-grid"><article class="detail-main"><span class="detail-kicker"><span style="width:7px;height:7px;border-radius:50%;background:${accent};display:inline-block"></span> ${esc(r.subject)} · ${esc(r.type)}</span><h1>${esc(r.title)}</h1><p class="detail-desc">${esc(r.desc)}</p><div class="detail-meta"><span>Lớp ${esc(r.grade)}</span><span>${esc(r.subject)}</span><span>${esc(r.type)}</span>${r.hot?'<span>HOT</span>':''}<span>MIỄN PHÍ</span></div><div class="detail-actions"><a class="primary-btn" href="${has?esc(view):'#'}" target="_blank" rel="noopener noreferrer" ${has?'':'aria-disabled="true"'}>${has?'Xem PDF':'Chưa có PDF'}</a><a class="secondary-btn" href="${has?esc(dl):'#'}" target="_blank" rel="noopener noreferrer" ${has?'':'aria-disabled="true"'}>Tải PDF</a><button class="zalo-btn" id="shareBtn" type="button">Chia sẻ tài liệu</button><a class="zalo-btn" href="https://zalo.me/0976366683" target="_blank" rel="noreferrer">Liên hệ Zalo HDT</a></div><div class="detail-info-grid"><div class="detail-info"><small>Định dạng</small><strong>PDF</strong></div><div class="detail-info"><small>Dung lượng</small><strong>${esc(r.fileSize||'PDF')}</strong></div><div class="detail-info"><small>Trạng thái</small><strong>${has?'Sẵn sàng tải':'Đang cập nhật'}</strong></div></div><section class="detail-section"><h2>Về tài liệu này</h2><p>${esc(r.desc)}</p></section><section class="detail-section"><h2>Gợi ý sử dụng</h2><p>HDT Study khuyến khích bạn tải tài liệu, ôn theo chuyên đề và kết hợp luyện đề để củng cố kiến thức. Hãy sử dụng tài liệu đúng mục đích và tôn trọng quyền chia sẻ của tác giả.</p></section><div class="detail-footer"><div><strong>HDT Study · Kho tài liệu ôn thi</strong><span>Tìm đúng tài liệu, học gọn hơn.</span></div><a href="index.html#tai-lieu">← Về kho tài liệu</a></div></article><aside class="detail-side"><div class="detail-preview" style="background:linear-gradient(135deg,${soft},#fff)"><div class="detail-preview-icon" style="color:${accent}">${icon}</div><small>${esc(r.subject)}</small></div><div class="detail-tip"><strong>Link tải tài liệu:</strong><br>${has?'Đang kết nối với file PDF của HDT. Bạn có thể xem hoặc tải ngay.':'Tài liệu chưa có link PDF công khai. Vui lòng quay lại sau.'}</div><div class="detail-status ${has?'ok':''}">${has?'● Tài liệu sẵn sàng':'● Đang cập nhật file'}</div></aside></div>`;
+        document.getElementById('shareBtn').addEventListener('click',async()=>{const url=location.href;try{await navigator.clipboard.writeText(url);alert('Đã sao chép link tài liệu.')}catch{window.prompt('Sao chép link tài liệu:',url)}});
+      }catch(e){root.innerHTML='<div class="detail-main"><h1>Không thể tải tài liệu</h1><p class="detail-desc">Google Sheets chưa phản hồi. Hãy kiểm tra kết nối hoặc quay lại trang chủ.</p><a class="primary-btn" href="index.html#tai-lieu">Quay lại HDT Study</a></div>'}
+    }
+    init();
+  </script>
+</body>
+</html>
