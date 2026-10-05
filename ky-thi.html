@@ -225,7 +225,7 @@
       };
 
       try {
-        const feed = String(window.GOOGLE_SHEET_CSV_URL || '').trim();
+        const feed = (typeof GOOGLE_SHEET_CSV_URL === 'string' ? GOOGLE_SHEET_CSV_URL : '').trim();
         if (!feed) throw new Error('GOOGLE_SHEET_CSV_URL is empty');
 
         const separator = feed.includes('?') ? '&' : '?';
