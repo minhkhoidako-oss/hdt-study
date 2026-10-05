@@ -225,8 +225,42 @@
       };
 
       try {
-        const feed = (typeof GOOGLE_SHEET_CSV_URL === 'string' ? GOOGLE_SHEET_CSV_URL : '').trim();
-        if (!feed) throw new Error('GOOGLE_SHEET_CSV_URL is empty');
+        let feed = '';
+
+        try {
+          feed = (typeof GOOGLE_SHEET_CSV_URL === 'string'
+            ? GOOGLE_SHEET_CSV_URL
+            : '').trim();
+        } catch (_) {
+          feed = '';
+        }
+
+        // Fallback: read the deployed config.js directly.
+        if (!feed) {
+          const configResponse = await fetch(
+            'config.js?_hdt_config=' + Date.now(),
+            { cache: 'no-store' }
+          );
+
+          if (!configResponse.ok) {
+            throw new Error(
+              `Không đọc được config.js (HTTP ${configResponse.status})`
+            );
+          }
+
+          const configText = await configResponse.text();
+          const match = configText.match(
+            /(?:const|let|var)\s+GOOGLE_SHEET_CSV_URL\s*=\s*['"]([^'"]+)['"]/
+          );
+
+          feed = match ? match[1].trim() : '';
+        }
+
+        if (!feed) {
+          throw new Error(
+            'Không tìm thấy GOOGLE_SHEET_CSV_URL trong config.js'
+          );
+        }
 
         const separator = feed.includes('?') ? '&' : '?';
         const url = `${feed}${separator}_hdt_counter=${Date.now()}`;
