@@ -48,24 +48,219 @@
   <footer class="footer"><div class="container footer-grid"><div><a class="brand footer-brand" href="index.html"><span class="brand-mark">HDT</span><span class="brand-copy"><strong>HDT Study</strong><small>THPT · FREE RESOURCES</small></span></a><p class="footer-copy">Kho tài liệu ôn thi THPT gọn gàng, dễ tìm và ưu tiên trải nghiệm học tập.</p></div><div><strong>Khám phá</strong><a href="index.html#tai-lieu">Tài liệu</a><a href="ky-thi.html">Đề thi & kỳ thi</a><a href="mon-hoc.html">Môn học</a></div><div><strong>Hỗ trợ</strong><a href="index.html#goc-hoc">Góc học tập</a><a href="lien-he.html">Liên hệ</a><a href="ban-quyen.html">Bản quyền</a><a href="dieu-khoan.html">Điều khoản</a></div><div><strong>Liên hệ nhanh</strong><a class="footer-zalo" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Zalo: 0976 366 683 ↗</a></div></div><div class="container footer-bottom"><span>© <span id="year"></span> HDT Study.</span><span>Made for Vietnamese students.</span></div></footer>
   <script src="config.js"></script>
   <script>
-    const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
-    const parseCsv=t=>{const rows=[];let row=[],cell='',q=false;for(let i=0;i<t.length;i++){const c=t[i],n=t[i+1];if(c==='"'){if(q&&n==='"'){cell+='"';i++;}else q=!q;}else if(c===','&&!q){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!q){if(c==='\r'&&n==='\n')i++;row.push(cell);cell='';if(row.some(x=>x.trim()))rows.push(row);row=[];}else cell+=c;}if(cell!==''||row.length){row.push(cell);if(row.some(x=>x.trim()))rows.push(row);}if(!rows.length)return[];const h=rows[0].map(x=>normalize(x));return rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,(r[i]||'').trim()])))};
-    const normalizeExamCode = (v = '') => {
-      const n = normalize(v).replace(/\s+/g, ' ').trim();
+    const normalize = v => String(v ?? '')
+      .replace(/^\uFEFF/, '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-      if (['tn-thpt','tn thpt','tn','thptqg','tot nghiep','tot nghiep thpt'].includes(n)) return 'tn-thpt';
-      if (['v-act','v act','vact','dgnl dhqg hcm','dhqg hcm'].includes(n)) return 'v-act';
-      if (['hsa','dgnl dhqg hn','dhqg hn'].includes(n)) return 'hsa';
-      if (['tsa','dgtd','danh gia tu duy','bach khoa ha noi'].includes(n)) return 'tsa';
-      if (['spt','dgnl spt','su pham ha noi','dai hoc su pham ha noi'].includes(n)) return 'spt';
-      if (['hsca','h sca','h-sca','hs-ca','dgnl chuyen biet','su pham tphcm','su pham thanh pho ho chi minh'].includes(n)) return 'hsca';
+    function parseCsv(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let quoted = false;
 
-      return '';
-    };
+      for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        const next = text[i + 1];
 
-    const inferExam=r=>{const raw=String(r.exam||r.examtype||r.kythi||'').trim();if(raw){const parts=raw.split(/[,;|\/]+/).map(normalizeExamCode).filter(Boolean);if(parts.length===1)return parts[0];}const hay=normalize([r.title,r.desc,r.type,r.tags].filter(Boolean).join(' '));return normalizeExamCode(hay)};
-    async function loadCounts(){try{const res=await fetch(GOOGLE_SHEET_CSV_URL,{cache:'no-store'});if(!res.ok)throw new Error('fetch');const rows=parseCsv(await res.text());const counts={'tn-thpt':0,'v-act':0,'hsa':0,'tsa':0,'spt':0,'hsca':0};rows.filter(r=>r.title).forEach(r=>{const e=inferExam(r);if(e)counts[e]++;});document.querySelectorAll('[data-exam-count]').forEach(el=>{const n=counts[el.dataset.exam]||0;el.textContent=`${n} tài liệu`;});}catch(e){document.querySelectorAll('[data-exam-count]').forEach(el=>el.textContent='Xem kho →');}}
-    document.getElementById('year').textContent=new Date().getFullYear(); loadCounts();
+        if (ch === '"') {
+          if (quoted && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            quoted = !quoted;
+          }
+        } else if (ch === ',' && !quoted) {
+          row.push(cell);
+          cell = '';
+        } else if ((ch === '\n' || ch === '\r') && !quoted) {
+          if (ch === '\r' && next === '\n') i++;
+          row.push(cell);
+          cell = '';
+          if (row.some(v => String(v).trim() !== '')) rows.push(row);
+          row = [];
+        } else {
+          cell += ch;
+        }
+      }
+
+      if (cell !== '' || row.length) {
+        row.push(cell);
+        if (row.some(v => String(v).trim() !== '')) rows.push(row);
+      }
+
+      if (!rows.length) return [];
+
+      const headers = rows[0].map(v => normalize(v));
+      return rows.slice(1).map(values => {
+        const out = {};
+        headers.forEach((header, index) => {
+          if (header) out[header] = String(values[index] ?? '').trim();
+        });
+        return out;
+      });
+    }
+
+    function examCodesFromValue(value) {
+      const raw = String(value ?? '').trim();
+      if (!raw) return [];
+
+      const parts = raw
+        .split(/[,;|/]+/)
+        .map(normalize)
+        .filter(Boolean);
+
+      const codes = new Set();
+
+      for (const n of parts) {
+        if (
+          n === 'hsa' ||
+          n.includes('dgnl dhqg hn') ||
+          n.includes('dgnl dhqg ha noi') ||
+          n.includes('dhqg hn') ||
+          n.includes('dhqg ha noi') ||
+          n.includes('hsa')
+        ) {
+          codes.add('hsa');
+        }
+
+        if (
+          n === 'v act' ||
+          n === 'vact' ||
+          n.includes('v act') ||
+          n.includes('dgnl dhqg hcm') ||
+          n.includes('dhqg hcm')
+        ) {
+          codes.add('v-act');
+        }
+
+        if (
+          n === 'tsa' ||
+          n.includes('tsa') ||
+          n === 'dgtd' ||
+          n.includes('danh gia tu duy') ||
+          n.includes('bach khoa ha noi')
+        ) {
+          codes.add('tsa');
+        }
+
+        if (
+          n === 'spt' ||
+          n.includes('spt') ||
+          n.includes('dgnl spt') ||
+          n.includes('su pham ha noi') ||
+          n.includes('dai hoc su pham ha noi')
+        ) {
+          codes.add('spt');
+        }
+
+        if (
+          n === 'hsca' ||
+          n === 'h sca' ||
+          n.includes('h sca') ||
+          n.includes('h-sca') ||
+          n.includes('dgnl chuyen biet') ||
+          n.includes('su pham tphcm') ||
+          n.includes('su pham thanh pho ho chi minh')
+        ) {
+          codes.add('hsca');
+        }
+
+        if (
+          n === 'tn thpt' ||
+          n === 'tn' ||
+          n === 'thptqg' ||
+          n.includes('tot nghiep') ||
+          n.includes('tot nghiep thpt') ||
+          n.includes('thi tot nghiep')
+        ) {
+          codes.add('tn-thpt');
+        }
+      }
+
+      return [...codes];
+    }
+
+    function getRowExamCodes(row) {
+      // Prefer the explicit exam column. It is the source of truth.
+      const explicit = examCodesFromValue(
+        row.exam || row.examtype || row.kythi || row.ky_thi || ''
+      );
+
+      if (explicit.length) return explicit;
+
+      // Backward-compatible fallback for older rows without exam metadata.
+      const fallback = examCodesFromValue(
+        [row.title, row.desc, row.type, row.tags]
+          .filter(Boolean)
+          .join(' ')
+      );
+
+      return fallback;
+    }
+
+    async function loadCounts() {
+      const badges = [...document.querySelectorAll('[data-exam-count]')];
+      const counts = {
+        'tn-thpt': 0,
+        'v-act': 0,
+        'hsa': 0,
+        'tsa': 0,
+        'spt': 0,
+        'hsca': 0
+      };
+
+      try {
+        const sep = String(GOOGLE_SHEET_CSV_URL).includes('?') ? '&' : '?';
+        const url = `${GOOGLE_SHEET_CSV_URL}${sep}_hdt=${Date.now()}`;
+
+        const response = await fetch(url, {
+          cache: 'no-store',
+          headers: { 'Accept': 'text/csv,text/plain,*/*' }
+        });
+
+        if (!response.ok) throw new Error(`CSV ${response.status}`);
+
+        const csv = await response.text();
+        const rows = parseCsv(csv);
+
+        rows
+          .filter(row => row.title)
+          .forEach(row => {
+            const codes = getRowExamCodes(row);
+
+            // Count each document once per exam.
+            new Set(codes).forEach(code => {
+              if (Object.prototype.hasOwnProperty.call(counts, code)) {
+                counts[code] += 1;
+              }
+            });
+          });
+
+        badges.forEach(badge => {
+          const code = badge.dataset.examCount;
+          badge.textContent = `${counts[code] ?? 0} tài liệu`;
+        });
+
+        console.info('[HDT] Exam counters', {
+          rows: rows.filter(row => row.title).length,
+          counts
+        });
+      } catch (error) {
+        console.error('[HDT] Exam counter error:', error);
+        badges.forEach(badge => {
+          badge.textContent = 'Không tải được';
+        });
+      }
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    loadCounts();
   </script>
 </body>
 </html>
