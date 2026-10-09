@@ -365,3 +365,15 @@ body.modal-open{overflow:hidden}
     flex-basis: 38px !important;
   }
 }
+/* HDT Study - Footer logo contrast fix */
+.footer .footer-brand .brand-copy strong {
+  color: #ffffff !important;
+}
+
+.footer .footer-brand .brand-copy small {
+  color: #b8c9e3 !important;
+}
+
+.footer .footer-copy {
+  color: #d2dced !important;
+}
