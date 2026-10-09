@@ -30,6 +30,37 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+
+  <style id="hdt-quick-access-styles">
+    .quick-access{padding:16px 0 0;background:linear-gradient(180deg,#f7faff 0%,#fff 100%)}
+    .quick-access-shell{display:grid;grid-template-columns:minmax(280px,.88fr) minmax(0,1.12fr);overflow:hidden;border:1px solid #dfe8f5;border-radius:24px;background:#fff;box-shadow:0 16px 42px rgba(25,55,100,.09)}
+    .quick-access-course{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:10px;padding:25px 26px;color:#fff;background:linear-gradient(135deg,#142541 0%,#194caa 60%,#2869e8 100%);isolation:isolate}
+    .quick-access-course:after{position:absolute;z-index:-1;content:"";width:210px;height:210px;right:-78px;top:-105px;border-radius:50%;background:rgba(255,255,255,.09);pointer-events:none}
+    .quick-access-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 9px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.09);color:#e6efff;font-size:9px;font-weight:900;letter-spacing:1px}
+    .quick-access-dot{width:7px;height:7px;border-radius:50%;background:#84f2c3;box-shadow:0 0 0 4px rgba(132,242,195,.14)}
+    .quick-access-course h2{max-width:420px;font:800 clamp(19px,2vw,25px)/1.22 "Plus Jakarta Sans",sans-serif;letter-spacing:-.55px;color:#fff;margin:0}
+    .quick-access-course p{max-width:410px;margin:0;color:#d7e5ff;font-size:12px;line-height:1.65}
+    .quick-course-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:42px;margin-top:3px;padding:0 14px;border:1px solid rgba(255,255,255,.65);border-radius:12px;background:#fff;color:#1556bb;text-decoration:none;font-size:12px;font-weight:900;box-shadow:0 9px 20px rgba(5,26,66,.18);transition:transform .18s ease,box-shadow .18s ease}
+    .quick-course-button:hover{transform:translateY(-2px);box-shadow:0 13px 26px rgba(5,26,66,.25)}
+    .quick-access-community{min-width:0;padding:23px 22px;display:flex;flex-direction:column;justify-content:center;gap:15px;background:linear-gradient(145deg,#fff 0%,#f8fbff 100%)}
+    .quick-community-label{color:#68809f;font-size:9px;letter-spacing:1.25px;font-weight:900}
+    .quick-community-heading h2{margin:5px 0 4px;color:#152b49;font:800 clamp(19px,2vw,23px)/1.2 "Plus Jakarta Sans",sans-serif;letter-spacing:-.45px}
+    .quick-community-heading p{margin:0;color:#718198;font-size:11px;line-height:1.5}
+    .quick-community-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .quick-community-link{display:flex;align-items:center;gap:8px;min-width:0;padding:11px 9px;border:1px solid #e0e8f3;border-radius:14px;background:#fff;color:#152b49;text-decoration:none;box-shadow:0 5px 16px rgba(25,55,100,.035);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+    .quick-community-link:hover{transform:translateY(-2px);border-color:#c6d8f1;box-shadow:0 10px 20px rgba(25,55,100,.08)}
+    .quick-link-icon{width:32px;height:32px;display:grid;place-items:center;flex:0 0 32px;border-radius:10px;background:#edf4ff;color:#2563eb;font:900 18px/1 Arial,sans-serif}
+    .quick-link-facebook .quick-link-icon{font-size:23px}
+    .quick-link-zalo .quick-link-icon{background:#e6f6ff;color:#087dcb}
+    .quick-link-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+    .quick-link-copy strong{font-size:11px;line-height:1.2}
+    .quick-link-copy small{color:#7c8aa0;font-size:9px;line-height:1.2}
+    .quick-link-arrow{color:#8b9bb1;font-size:13px;align-self:flex-start}
+    @media(max-width:900px){.quick-access-shell{grid-template-columns:1fr}.quick-access-course{padding:22px 24px}.quick-access-community{padding:21px 22px}.quick-access-course h2,.quick-community-heading h2{font-size:22px}}
+    @media(max-width:560px){.quick-access{padding-top:10px}.quick-access-shell{border-radius:19px}.quick-access-course{padding:19px 17px;gap:9px}.quick-access-community{padding:18px 13px;gap:12px}.quick-access-course h2,.quick-community-heading h2{font-size:19px}.quick-access-course p{font-size:11px}.quick-course-button{width:100%}.quick-community-links{gap:6px}.quick-community-link{flex-direction:column;justify-content:center;gap:5px;min-height:76px;padding:9px 4px;text-align:center;border-radius:12px}.quick-link-icon{width:29px;height:29px;flex-basis:29px;border-radius:9px}.quick-link-copy{align-items:center}.quick-link-copy strong{font-size:10px}.quick-link-copy small,.quick-link-arrow{display:none}}
+    @media(prefers-reduced-motion:reduce){.quick-course-button,.quick-community-link{transition:none}}
+  </style>
+
 </head>
 <body>
   <div class="topbar">
@@ -73,6 +104,46 @@
   </header>
 
   <main id="top">
+
+    <section class="quick-access" aria-labelledby="quickAccessCourseTitle">
+      <div class="container">
+        <div class="quick-access-shell">
+          <div class="quick-access-course">
+            <span class="quick-access-eyebrow"><span class="quick-access-dot"></span> THÔNG TIN TỪ HDT</span>
+            <h2 id="quickAccessCourseTitle">HDT có cung cấp các khóa học THPTQG</h2>
+            <p>Lộ trình rõ ràng, học đúng trọng tâm. Nhắn HDT để hỏi nội dung khóa học và học phí.</p>
+            <a class="quick-course-button" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">
+              Nhận tư vấn khóa học <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+          <div class="quick-access-community" aria-labelledby="quickAccessCommunityTitle">
+            <div class="quick-community-heading">
+              <span class="quick-community-label">CỘNG ĐỒNG HDT STUDY</span>
+              <h2 id="quickAccessCommunityTitle">Tham gia nhóm học tập</h2>
+              <p>Cập nhật tài liệu, trao đổi và cùng nhau ôn thi.</p>
+            </div>
+            <div class="quick-community-links">
+              <a class="quick-community-link quick-link-facebook" href="https://www.facebook.com/groups/331305393251199" target="_blank" rel="noopener noreferrer">
+                <span class="quick-link-icon" aria-hidden="true">f</span>
+                <span class="quick-link-copy"><strong>Facebook</strong><small>Nhóm HDT</small></span>
+                <span class="quick-link-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a class="quick-community-link quick-link-zalo" href="https://zalo.me/g/7jdcjijj9xu4zob31bhw" target="_blank" rel="noopener noreferrer">
+                <span class="quick-link-icon" aria-hidden="true">Z</span>
+                <span class="quick-link-copy"><strong>Zalo 1</strong><small>Nhóm học tập</small></span>
+                <span class="quick-link-arrow" aria-hidden="true">↗</span>
+              </a>
+              <a class="quick-community-link quick-link-zalo" href="https://zalo.me/g/wpgzfn8et5v3edbfflyv" target="_blank" rel="noopener noreferrer">
+                <span class="quick-link-icon" aria-hidden="true">Z</span>
+                <span class="quick-link-copy"><strong>Zalo 2</strong><small>Nhóm học tập</small></span>
+                <span class="quick-link-arrow" aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="hero">
       <div class="hero-glow glow-1"></div>
       <div class="hero-glow glow-2"></div>
@@ -81,16 +152,7 @@
           <div class="eyebrow"><span class="eyebrow-dot"></span> HDT STUDY · HỌC NHANH · ÔN ĐÚNG · THI TỐT</div>
           <h1>HDT giúp bạn <span>ôn thi nhẹ hơn</span>, chuẩn bị tốt hơn.</h1>
           <p class="hero-lead">Tài liệu, đề thi và chuyên đề THPTQG được sắp xếp gọn gàng để bạn tìm đúng thứ cần học chỉ trong vài giây.</p>
-          <div class="course-note course-note-featured" aria-label="Thông tin khóa học HDT">
-            <span class="course-note-badge">HDT</span>
-            <div>
-              <span class="course-note-kicker">HDT COURSES</span>
-              <strong>HDT có cung cấp các khóa học THPTQG</strong>
-              <small>Học theo lộ trình · Chi phí hợp lý · Tư vấn nhanh qua Zalo</small>
-            </div>
-            <a class="course-note-cta" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer"><span>Nhận tư vấn</span><span aria-hidden="true">↗</span></a>
-          </div>
-          <div class="hero-search" role="search">
+<div class="hero-search" role="search">
             <span class="search-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span>
             <input id="searchInput" type="search" placeholder="Tìm: Toán 12, V-ACT, đề thi thử..." autocomplete="off" spellcheck="false" aria-label="Tìm kiếm tài liệu, môn học và kỳ thi" />
             <button class="search-clear" id="searchClear" type="button" aria-label="Xóa tìm kiếm" hidden>×</button>
@@ -142,32 +204,6 @@
       </div>
     </section>
 
-    <section class="course-promo" aria-labelledby="coursePromoTitle">
-    <div class="container">
-      <div class="course-promo-card">
-        <div class="course-promo-main">
-          <span class="course-promo-label">HDT COURSES · THPTQG</span>
-          <h2 id="coursePromoTitle">HDT có cung cấp các khóa học THPTQG</h2>
-          <p>Lộ trình rõ ràng, học đúng trọng tâm và được tư vấn nhanh qua Zalo <strong>0976 366 683</strong>.</p>
-        </div>
-        <a class="course-promo-button" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">
-          <span>Liên hệ khóa học</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="announcement">
-      <div class="container announcement-card">
-        <div class="announcement-icon"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5A3.5 3.5 0 0 1 8.5 3h7A3.5 3.5 0 0 1 19 6.5V13a3.5 3.5 0 0 1-3.5 3.5H12l-4 3v-3.1A3.5 3.5 0 0 1 5 13V6.5Z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg></div>
-        <div class="announcement-copy">
-          <span>HDT SUPPORT</span>
-          <strong>Bạn nào cần các khóa học THPTQG chi phí rẻ liên hệ Zalo 0976366683</strong>
-        </div>
-        <a class="announcement-btn" href="https://zalo.me/0976366683" target="_blank" rel="noopener noreferrer">Truy cập Zalo nhanh <span class="arrow-icon" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></a>
-      </div>
-    </section>
 
     <section class="stats section-sm">
       <div class="container stats-grid">
