@@ -874,7 +874,7 @@ async function syncResources() {
     return true;
   }
 
-  render();
+  render(); 
   return false;
 }
 
