@@ -1,0 +1,65 @@
+/* HDT Study — polish trailing controls on homepage subject cards.
+   Safe additive override: does not change card links, data, or page layout. */
+#mon-hoc .subject-card .subject-arrow {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 2px 0 auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--subject, #3978ef) !important;
+  font-size: 21px !important;
+  font-family: inherit !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  opacity: .72;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  transform: translateX(0);
+  transition: color .18s ease, opacity .18s ease, transform .18s ease;
+}
+
+/* If an older stylesheet uses a pseudo-element for the blank placeholder,
+   remove it so only the real arrow is displayed. */
+#mon-hoc .subject-card .subject-arrow::before,
+#mon-hoc .subject-card .subject-arrow::after {
+  content: none !important;
+  display: none !important;
+}
+
+#mon-hoc .subject-card:hover .subject-arrow {
+  color: var(--subject, #3978ef) !important;
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+#mon-hoc .subject-card:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--subject, #3978ef) 30%, transparent);
+  outline-offset: 4px;
+  box-shadow: 0 12px 28px rgba(32, 65, 120, .10);
+}
+
+@media (hover: none) {
+  #mon-hoc .subject-card .subject-arrow {
+    opacity: .86;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #mon-hoc .subject-card .subject-arrow {
+    transition: none;
+  }
+  #mon-hoc .subject-card:hover .subject-arrow {
+    transform: none;
+  }
+}
