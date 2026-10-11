@@ -2,4 +2,3 @@ User-agent: *
 Allow: /
 
 Sitemap: https://hdt-study.pages.dev/sitemap.xml
-Sitemap: https://hdt-study.pages.dev/sitemap.txt
