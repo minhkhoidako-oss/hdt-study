@@ -1,4 +1,4 @@
-/* HDT Study Donate Module v1.0
+/* HDT Study Donate Module v1.1 — floating button overlap fix
  * Static-site friendly: no backend, no payment data collection.
  * Requires donate-qr.png in the same directory as this file.
  */
@@ -94,6 +94,43 @@
 
   document.body.appendChild(fab);
   document.body.appendChild(backdrop);
+
+  // Keep the floating Donate button separate from the site's floating Zalo button.
+  // This measures the actual Zalo position, so it adapts to desktop/mobile layouts.
+  function positionDonateFab() {
+    const zaloFab = document.querySelector('.floating-zalo');
+    const fallbackBottom = window.matchMedia('(max-width: 640px)').matches
+      ? 'max(14px, env(safe-area-inset-bottom))'
+      : 'max(20px, env(safe-area-inset-bottom))';
+
+    if (!zaloFab) {
+      fab.style.bottom = fallbackBottom;
+      return;
+    }
+
+    const rect = zaloFab.getBoundingClientRect();
+    const zaloStyle = window.getComputedStyle(zaloFab);
+    const visible = rect.width > 0 && rect.height > 0 &&
+      zaloStyle.display !== 'none' && zaloStyle.visibility !== 'hidden' &&
+      Number(zaloStyle.opacity || 1) > 0 && rect.bottom > 0 && rect.top < window.innerHeight;
+
+    if (!visible) {
+      fab.style.bottom = fallbackBottom;
+      return;
+    }
+
+    const gap = window.matchMedia('(max-width: 640px)').matches ? 10 : 14;
+    const bottom = Math.max(16, window.innerHeight - rect.top + gap);
+    fab.style.bottom = `${bottom}px`;
+  }
+
+  window.addEventListener('resize', positionDonateFab, { passive: true });
+  window.addEventListener('orientationchange', () => {
+    window.setTimeout(positionDonateFab, 80);
+  }, { passive: true });
+  window.addEventListener('scroll', positionDonateFab, { passive: true });
+  window.requestAnimationFrame(positionDonateFab);
+  window.setTimeout(positionDonateFab, 250);
 
   const closeButton = backdrop.querySelector('.hdt-donate-close');
   const dismissButton = backdrop.querySelector('[data-hdt-donate-close]');
