@@ -9,1655 +9,489 @@ const icons = {
   history: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M10 12h15a7 7 0 0 1 7 7v19H17a7 7 0 0 1-7-7V12Z"/><path d="M39 12H24a7 7 0 0 0-7 7v19h15a7 7 0 0 0 7-7V12Z"/><path d="M18 19h8M18 25h9M30 19h3M30 25h3"/></svg>`,
   civics: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 16h30L24 9 9 16Z"/><path d="M13 18v15M21 18v15M27 18v15M35 18v15"/><path d="M8 37h32M7 40h34"/></svg>`,
   file: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M12 6h18l8 8v28H12a4 4 0 0 1-4-4V10a4 4 0 0 1 4-4Z"/><path d="M30 6v9h8M15 24h18M15 30h18M15 36h11"/></svg>`,
+  computer: `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="8" width="36" height="26" rx="5"/><path d="M16 40h16M24 34v6M14 15h20M14 21h9M27 21h7M14 27h16"/></svg>`,
+  technology: `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M30 8a9 9 0 0 0-11 12L8 31l4 4 11-11A9 9 0 0 0 30 8Z"/><path d="m34 28 6 6-6 6-6-6M31 11l6-6M37 15l5-1"/></svg>`,
 };
 
 const subjectIconByName = {
-  'Toán': icons.math,
-  'Ngữ Văn': icons.literature,
-  'Tiếng Anh': icons.english,
-  'Vật Lý': icons.physics,
-  'Hóa Học': icons.chemistry,
-  'Sinh Học': icons.biology,
-  'Địa Lý': icons.geography,
-  'Lịch Sử': icons.history,
-  'GDKT&PL': icons.civics
+  'Toán': icons.math, 'Ngữ Văn': icons.literature, 'Tiếng Anh': icons.english,
+  'Vật Lý': icons.physics, 'Hóa Học': icons.chemistry, 'Sinh Học': icons.biology,
+  'Địa Lý': icons.geography, 'Lịch Sử': icons.history, 'GDKT&PL': icons.civics,
+  'Tin Học': icons.english, 'Công Nghệ': icons.file
 };
-
 const subjectTone = {
-  'Toán': 'blue',
-  'Ngữ Văn': 'rose',
-  'Tiếng Anh': 'indigo',
-  'Vật Lý': 'cyan',
-  'Hóa Học': 'orange',
-  'Sinh Học': 'green',
-  'Địa Lý': 'amber',
-  'Lịch Sử': 'violet',
-  'GDKT&PL': 'teal'
+  'Toán': 'blue', 'Ngữ Văn': 'rose', 'Tiếng Anh': 'indigo', 'Vật Lý': 'cyan',
+  'Hóa Học': 'orange', 'Sinh Học': 'green', 'Địa Lý': 'amber', 'Lịch Sử': 'violet',
+  'GDKT&PL': 'teal', 'Tin Học': 'blue', 'Công Nghệ': 'orange'
 };
 
 function parseCsv(text) {
-  const rows = [];
-  let row = [];
-  let cell = '';
-  let quoted = false;
-
+  const rows = []; let row = []; let cell = ''; let quoted = false;
   for (let i = 0; i < text.length; i++) {
-    const ch = text[i];
-    const next = text[i + 1];
-
-    if (ch === '"') {
-      if (quoted && next === '"') {
-        cell += '"';
-        i++;
-      } else {
-        quoted = !quoted;
-      }
-    } else if (ch === ',' && !quoted) {
-      row.push(cell);
-      cell = '';
-    } else if ((ch === '\n' || ch === '\r') && !quoted) {
-      if (ch === '\r' && next === '\n') i++;
-      row.push(cell);
-      cell = '';
-
-      if (row.some(v => v.trim() !== '')) {
-        rows.push(row);
-      }
-
-      row = [];
-    } else {
-      cell += ch;
-    }
+    const ch = text[i], next = text[i + 1];
+    if (ch === '"') { if (quoted && next === '"') { cell += '"'; i++; } else quoted = !quoted; }
+    else if (ch === ',' && !quoted) { row.push(cell); cell = ''; }
+    else if ((ch === '\n' || ch === '\r') && !quoted) {
+      if (ch === '\r' && next === '\n') i++; row.push(cell); cell = '';
+      if (row.some(v => v.trim() !== '')) rows.push(row); row = [];
+    } else cell += ch;
   }
-
-  if (cell !== '' || row.length) {
-    row.push(cell);
-    if (row.some(v => v.trim() !== '')) {
-      rows.push(row);
-    }
-  }
-
+  if (cell !== '' || row.length) { row.push(cell); if (row.some(v => v.trim() !== '')) rows.push(row); }
   if (!rows.length) return [];
-
   const headers = rows[0].map(h => h.trim().toLowerCase());
-
-  return rows.slice(1).map(r =>
-    Object.fromEntries(
-      headers.map((h, i) => [h, (r[i] || '').trim()])
-    )
-  );
+  return rows.slice(1).map(r => Object.fromEntries(headers.map((h, i) => [h, (r[i] || '').trim()])));
 }
 
-function truthy(v) {
-  return [
-    'true',
-    '1',
-    'yes',
-    'y',
-    'có',
-    'co',
-    'hot',
-    'featured',
-    'x'
-  ].includes(String(v).toLowerCase().trim());
-}
-
-function slugifyVi(value = '') {
-  return String(value)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 90);
-}
-
-function escapeHtml(value = '') {
-  return String(value).replace(/[&<>"]/g, m => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;'
-  }[m] || m));
-}
-
+function truthy(v) { return ['true','1','yes','y','có','co','hot','featured','x'].includes(String(v).toLowerCase().trim()); }
+function slugifyVi(value = '') { return String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,90); }
+function escapeHtml(value = '') { return String(value).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m] || m)); }
 function normalizeSubject(value = '') {
   const s = String(value).trim().toLowerCase();
-
-  const aliases = {
-    'toan': 'Toán',
-    'toán': 'Toán',
-    'ngữ văn': 'Ngữ Văn',
-    'ngu van': 'Ngữ Văn',
-    'tiếng anh': 'Tiếng Anh',
-    'tieng anh': 'Tiếng Anh',
-    'vật lý': 'Vật Lý',
-    'vat ly': 'Vật Lý',
-    'hóa học': 'Hóa Học',
-    'hoa hoc': 'Hóa Học',
-    'sinh học': 'Sinh Học',
-    'sinh hoc': 'Sinh Học',
-    'địa lý': 'Địa Lý',
-    'dia ly': 'Địa Lý',
-    'lịch sử': 'Lịch Sử',
-    'lich su': 'Lịch Sử',
-    'gdkt&pl': 'GDKT&PL'
-  };
-
+  const aliases = {'toan':'Toán','toán':'Toán','ngữ văn':'Ngữ Văn','ngu van':'Ngữ Văn','tiếng anh':'Tiếng Anh','tieng anh':'Tiếng Anh','vật lý':'Vật Lý','vat ly':'Vật Lý','hóa học':'Hóa Học','hoa hoc':'Hóa Học','sinh học':'Sinh Học','sinh hoc':'Sinh Học','địa lý':'Địa Lý','dia ly':'Địa Lý','lịch sử':'Lịch Sử','lich su':'Lịch Sử','gdkt&pl':'GDKT&PL','gdkt pl':'GDKT&PL','tin học':'Tin Học','tin hoc':'Tin Học','công nghệ':'Công Nghệ','cong nghe':'Công Nghệ'};
   return aliases[s] || String(value).trim() || 'Khác';
 }
-
-function normalizeSearch(value = '') {
-  return String(value)
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .trim();
-}
-
-function inferIcon(subject) {
-  return subjectIconByName[normalizeSubject(subject)] || icons.file;
-}
-
-function toneFor(subject) {
-  return subjectTone[normalizeSubject(subject)] || 'blue';
-}
-
-function driveIdFromUrl(url = '') {
-  const m =
-    String(url).match(/\/d\/([a-zA-Z0-9_-]+)/) ||
-    String(url).match(/[?&]id=([a-zA-Z0-9_-]+)/);
-
-  return m ? m[1] : '';
-}
+function normalizeSearch(value = '') { return String(value).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim(); }
+function inferIcon(subject) { return subjectIconByName[normalizeSubject(subject)] || icons.file; }
+function toneFor(subject) { return subjectTone[normalizeSubject(subject)] || 'blue'; }
+function driveIdFromUrl(url = '') { const m = String(url).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(url).match(/[?&]id=([a-zA-Z0-9_-]+)/); return m ? m[1] : ''; }
 
 function normalizeSheetResources(rows) {
-  return rows
-    .filter(r => r.title)
-    .map((r, i) => {
-      const subject = normalizeSubject(r.subject);
-      const rawUrl = r.url || r.fileurl || '';
-      const driveId = r.driveid || driveIdFromUrl(rawUrl);
-      const title = String(r.title).trim();
-
-      return {
-        id: r.id || `sheet-${i + 1}`,
-        grade: String(r.grade || '12').trim(),
-        subject,
-        type: String(r.type || r.category || 'Tài liệu').trim(),
-        title,
-        desc:
-          r.desc ||
-          r.description ||
-          'Tài liệu học tập miễn phí trên HDT Study.',
-        hot: truthy(r.hot),
-        featured: truthy(r.featured),
-        file: r.filesize || r.file || 'PDF',
-        icon: inferIcon(subject),
-        url: rawUrl,
-        driveId,
-        slug: r.slug || slugifyVi(title),
-        publishedAt: r.publishedat || ''
-      };
-    });
+  return rows.filter(r => r.title).map((r, i) => {
+    const subject = normalizeSubject(r.subject);
+    const rawUrl = r.url || r.fileurl || '';
+    const exam = String(r.exam || r.examname || r.examtype || r.kythi || r['kỳ thi'] || '').trim();
+    const tags = String(r.tags || r.keywords || r.tukhoa || r['từ khóa'] || '').trim();
+    return {
+      id: r.id || `sheet-${i + 1}`,
+      grade: String(r.grade || '12').trim(),
+      subject,
+      type: String(r.type || r.category || 'Tài liệu').trim(),
+      title: String(r.title).trim(),
+      desc: r.desc || r.description || 'Tài liệu học tập miễn phí trên HDT Study.',
+      exam,
+      tags,
+      keywords: tags,
+      hot: truthy(r.hot),
+      featured: truthy(r.featured),
+      file: r.filesize || r.file || 'PDF',
+      icon: inferIcon(subject),
+      url: rawUrl,
+      driveId: r.driveid || driveIdFromUrl(rawUrl),
+      slug: r.slug || slugifyVi(r.title),
+      publishedAt: r.publishedat || ''
+    };
+  });
 }
 
 async function loadFromGoogleSheet() {
   if (!GOOGLE_SHEET_CSV_URL) return null;
-
   const status = document.getElementById('sheetStatus');
-
   try {
-    if (status) {
-      status.innerHTML =
-        '<span class="status-dot"></span>Đang đồng bộ tài liệu...';
-    }
-
-    const res = await fetch(GOOGLE_SHEET_CSV_URL, {
-      cache: 'no-store'
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-
-    const data = normalizeSheetResources(
-      parseCsv(await res.text())
-    );
-
-    if (!data.length) {
-      throw new Error('Google Sheet không có tài liệu hợp lệ');
-    }
-
-    if (status) {
-      status.innerHTML =
-        `<span class="status-dot is-live"></span>Đã đồng bộ ${data.length} tài liệu`;
-    }
-
+    if (status) status.innerHTML = '<span class="status-dot"></span>Đang đồng bộ tài liệu...';
+    const res = await fetch(GOOGLE_SHEET_CSV_URL, { cache:'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = normalizeSheetResources(parseCsv(await res.text()));
+    if (!data.length) throw new Error('Google Sheet không có tài liệu hợp lệ');
+    if (status) status.innerHTML = `<span class="status-dot is-live"></span>Đã đồng bộ ${data.length} tài liệu`;
     return data;
   } catch (err) {
-    console.warn(
-      'HDT Study: không tải được Google Sheet.',
-      err
-    );
-
-    if (status) {
-      status.innerHTML =
-        '<span class="status-dot is-fallback"></span>Đang dùng dữ liệu dự phòng';
-    }
-
+    console.warn('HDT Study: không tải được Google Sheet.', err);
+    if (status) status.innerHTML = '<span class="status-dot is-fallback"></span>Đang dùng dữ liệu dự phòng';
     return null;
   }
 }
 
 const resources = [
-  {
-    id: 1,
-    grade: '12',
-    subject: 'Toán',
-    type: 'Chuyên đề',
-    title: 'Vectơ và hệ trục tọa độ trong không gian – Toán 12',
-    desc:
-      'Tài liệu 320 trang gồm lý thuyết, ví dụ, bài tập và bộ đề ôn tập về vectơ trong không gian.',
-    hot: true,
-    featured: true,
-    file: 'PDF · 3.4 MB',
-    icon: icons.math,
-    url: 'https://drive.google.com/file/d/1ppIPBjEmOcA_x2I3hnFxUhIl3DjEgjvf/view?usp=sharing',
-    driveId: '1ppIPBjEmOcA_x2I3hnFxUhIl3DjEgjvf'
-  },
-  {
-    id: 2,
-    grade: '12',
-    subject: 'Lịch Sử',
-    type: 'Tổng ôn',
-    title: 'Tóm tắt kiến thức Lịch sử 12',
-    desc:
-      'Bộ tóm tắt kiến thức theo chủ đề, phù hợp để hệ thống nhanh trước khi luyện đề.',
-    hot: true,
-    featured: true,
-    file: 'PDF · 391 KB',
-    icon: icons.history,
-    url: 'https://drive.google.com/file/d/1irE6iY-ep7Bz4woZDMu7LYz0veAqyP2I/view?usp=sharing',
-    driveId: '1irE6iY-ep7Bz4woZDMu7LYz0veAqyP2I'
-  },
-  {
-    id: 3,
-    grade: '12',
-    subject: 'Sinh Học',
-    type: 'Tổng ôn',
-    title: 'Tổng hợp toàn bộ kiến thức Sinh học 12',
-    desc:
-      'Tài liệu tổng hợp kiến thức Sinh học 12, dùng để rà soát và củng cố trước kỳ thi.',
-    hot: true,
-    featured: true,
-    file: 'PDF · 16 MB',
-    icon: icons.biology,
-    url: 'https://drive.google.com/file/d/1KKUtRhBoQC6jdJM2TxQmWa5OBUK5u4bB/view?usp=sharing',
-    driveId: '1KKUtRhBoQC6jdJM2TxQmWa5OBUK5u4bB'
-  }
+  {id:1,grade:'12',subject:'Toán',type:'Chuyên đề',title:'Vectơ và hệ trục tọa độ trong không gian – Toán 12',desc:'Tài liệu 320 trang gồm lý thuyết, ví dụ, bài tập và bộ đề ôn tập về vectơ trong không gian.',hot:true,featured:true,file:'PDF · 3.4 MB',icon:icons.math,url:'https://drive.google.com/file/d/1ppIPBjEmOcA_x2I3hnFxUhIl3DjEgjvf/view?usp=sharing',driveId:'1ppIPBjEmOcA_x2I3hnFxUhIl3DjEgjvf'},
+  {id:2,grade:'12',subject:'Lịch Sử',type:'Tổng ôn',title:'Tóm tắt kiến thức Lịch sử 12',desc:'Bộ tóm tắt kiến thức theo chủ đề, phù hợp để hệ thống nhanh trước khi luyện đề.',hot:true,featured:true,file:'PDF · 391 KB',icon:icons.history,url:'https://drive.google.com/file/d/1irE6iY-ep7Bz4woZDMu7LYz0veAqyP2I/view?usp=sharing',driveId:'1irE6iY-ep7Bz4woZDMu7LYz0veAqyP2I'},
+  {id:3,grade:'12',subject:'Sinh Học',type:'Tổng ôn',title:'Tổng hợp toàn bộ kiến thức Sinh học 12',desc:'Tài liệu tổng hợp kiến thức Sinh học 12, dùng để rà soát và củng cố trước kỳ thi.',hot:true,featured:true,file:'PDF · 16 MB',icon:icons.biology,url:'https://drive.google.com/file/d/1KKUtRhBoQC6jdJM2TxQmWa5OBUK5u4bB/view?usp=sharing',driveId:'1KKUtRhBoQC6jdJM2TxQmWa5OBUK5u4bB'}
 ];
 
-let activeGrade = 'all';
-let activeSubject = 'all';
-let activeType = 'all';
-let shown = 6;
-let query = '';
-let resourceData = [...resources];
+let activeGrade='all', activeSubject='all', activeType='all', shown=6, query='';
+let resourceData=[...resources];
+const grid=document.getElementById('resourceGrid');
+const loadMore=document.getElementById('loadMoreBtn');
+const searchInput=document.getElementById('searchInput');
+const searchBtn=document.getElementById('searchBtn');
+const searchClear=document.getElementById('searchClear');
+const searchFeedback=document.getElementById('searchFeedback');
+const syncBtn=document.getElementById('syncBtn');
+const docModal=document.getElementById('docModal'), docModalClose=document.getElementById('docModalClose'), docModalTitle=document.getElementById('docModalTitle'), docModalDesc=document.getElementById('docModalDesc'), docModalMeta=document.getElementById('docModalMeta'), docModalDetails=document.getElementById('docModalDetails'), docModalVisual=document.getElementById('docModalVisual'), docModalView=document.getElementById('docModalView'), docModalDownload=document.getElementById('docModalDownload'), docModalCopy=document.getElementById('docModalCopy'), docModalType=document.getElementById('docModalType');
 
-const grid = document.getElementById('resourceGrid');
-const loadMore = document.getElementById('loadMoreBtn');
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const syncBtn = document.getElementById('syncBtn');
+// Search aliases are directional: a broad DGNL search includes related exams,
+// while searching a specific exam such as HSA does not return V-ACT as an equivalent.
+const SEARCH_QUERY_ALIASES = [
+  { id: 'dgnl', triggers: ['dgnl', 'danh gia nang luc'], variants: ['dgnl', 'danh gia nang luc', 'v act', 'vact', 'hsa', 'hsca', 'h sca', 'spt'] },
+  { id: 'dgtd', triggers: ['dgtd', 'danh gia tu duy', 'tsa'], variants: ['dgtd', 'danh gia tu duy', 'tsa'] },
+  { id: 'vact', triggers: ['v act', 'vact'], variants: ['v act', 'vact'] },
+  { id: 'hsa', triggers: ['hsa'], variants: ['hsa'] },
+  { id: 'hsca', triggers: ['hsca', 'h sca'], variants: ['hsca', 'h sca'] },
+  { id: 'spt', triggers: ['spt'], variants: ['spt', 'dgnl spt'] },
+  { id: 'thptqg', triggers: ['thptqg', 'thpt', 'tn thpt', 'tot nghiep thpt', 'thi tot nghiep'], variants: ['thptqg', 'thpt', 'tn thpt', 'tot nghiep thpt', 'thi tot nghiep'] }
+].map(group => ({ ...group, triggers: group.triggers.map(normalizeSearch), variants: group.variants.map(normalizeSearch) }));
+const GENERIC_TERMS = new Set(['pdf', 'tai', 'lieu', 'mien', 'phi', 'free', 'hdt', 'study']);
+const searchIndexCache = new WeakMap();
 
-const docModal = document.getElementById('docModal');
-const docModalClose = document.getElementById('docModalClose');
-const docModalTitle = document.getElementById('docModalTitle');
-const docModalDesc = document.getElementById('docModalDesc');
-const docModalMeta = document.getElementById('docModalMeta');
-const docModalDetails = document.getElementById('docModalDetails');
-const docModalVisual = document.getElementById('docModalVisual');
-const docModalView = document.getElementById('docModalView');
-const docModalDownload = document.getElementById('docModalDownload');
-const docModalCopy = document.getElementById('docModalCopy');
-const docModalType = document.getElementById('docModalType');
-
-function matches(r) {
-  const gradeOk =
-    activeGrade === 'all' || r.grade === activeGrade;
-
-  const subjectOk =
-    activeSubject === 'all' ||
-    r.subject === activeSubject;
-
-  const typeOk =
-    activeType === 'all' ||
-    r.type === activeType;
-
-  const q = normalizeSearch(query);
-
-  const hay = normalizeSearch(
-    [
-      r.title,
-      r.subject,
-      r.type,
-      r.desc,
-      r.grade,
-      r.tags || ''
-    ].join(' ')
-  );
-
-  return (
-    gradeOk &&
-    subjectOk &&
-    typeOk &&
-    (!q || hay.includes(q))
-  );
+function editDistanceLE1(a, b) {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  let i = 0, j = 0, differences = 0;
+  while (i < a.length && j < b.length) {
+    if (a[i] !== b[j]) {
+      if (++differences > 1) return false;
+      if (a.length > b.length) i++;
+      else if (b.length > a.length) j++;
+      else { i++; j++; }
+    } else { i++; j++; }
+  }
+  if (i < a.length || j < b.length) differences++;
+  return differences <= 1;
 }
 
-function driveViewUrl(r) {
-  return (
-    r.url ||
-    (r.driveId
-      ? `https://drive.google.com/file/d/${r.driveId}/view`
-      : '')
-  );
+function includesSearchPhrase(text, phrase) {
+  if (!text || !phrase) return false;
+  return (` ${text} `).includes(` ${phrase} `);
 }
 
-function driveDownloadUrl(r) {
-  return r.driveId
-    ? `https://drive.google.com/uc?export=download&id=${r.driveId}`
-    : driveViewUrl(r);
-}
+function buildSearchConcepts(query) {
+  const tokens = normalizeSearch(query).split(' ').filter(Boolean);
+  const concepts = [];
+  const usedGroups = new Set();
+  let i = 0;
 
-function render() {
-  const filtered = resourceData.filter(matches);
-
-  const sorted = [...filtered].sort(
-    (a, b) =>
-      Number(b.featured) - Number(a.featured) ||
-      Number(b.hot) - Number(a.hot) ||
-      String(b.publishedAt || '').localeCompare(
-        String(a.publishedAt || '')
-      ) ||
-      String(a.title).localeCompare(
-        String(b.title),
-        'vi'
-      )
-  );
-
-  const visible = sorted.slice(0, shown);
-
-  grid.innerHTML = visible.length
-    ? visible
-        .map(r => {
-          const tone = toneFor(r.subject);
-          const hasUrl = Boolean(r.url || r.driveId);
-          const viewUrl = driveViewUrl(r);
-          const detailUrl =
-            `tai-lieu?slug=${encodeURIComponent(
-              r.slug || slugifyVi(r.title)
-            )}`;
-
-          return `
-            <article
-              class="resource-card tone-${tone}"
-              data-doc-id="${escapeHtml(r.id)}"
-              data-detail-url="${detailUrl}"
-              tabindex="0"
-              role="link"
-              aria-label="Xem ${escapeHtml(r.title)}"
-            >
-              <div class="resource-thumb">
-                <div class="resource-thumb-pattern"></div>
-
-                <div class="resource-badge-row">
-                  <span class="resource-type-badge">PDF</span>
-
-                  <span class="resource-badge">
-                    ${
-                      r.hot
-                        ? '<span class="badge-dot hot"></span>HOT · '
-                        : ''
-                    }
-                    <span class="badge-dot free"></span>
-                    MIỄN PHÍ
-                  </span>
-                </div>
-
-                <div class="resource-visual">
-                  <span class="resource-visual-icon">
-                    ${r.icon || icons.file}
-                  </span>
-
-                  <span class="resource-visual-label">
-                    ${escapeHtml(r.subject)}
-                  </span>
-                </div>
-              </div>
-
-              <div class="resource-body">
-                <div class="resource-meta">
-                  <span>Lớp ${escapeHtml(r.grade)}</span>
-                  <span>${escapeHtml(r.subject)}</span>
-                  <span>${escapeHtml(r.type)}</span>
-                </div>
-
-                <h3>${escapeHtml(r.title)}</h3>
-
-                <p>${escapeHtml(r.desc)}</p>
-
-                <div class="resource-footer">
-                  <div class="resource-actions">
-                    ${
-                      hasUrl
-                        ? `
-                          <button
-                            class="resource-link resource-detail-btn"
-                            type="button"
-                            data-doc-id="${escapeHtml(r.id)}"
-                          >
-                            Xem chi tiết <span>→</span>
-                          </button>
-                        `
-                        : `
-                          <span class="resource-link muted-link">
-                            Sắp cập nhật
-                          </span>
-                        `
-                    }
-
-                    ${
-                      hasUrl
-                        ? `
-                          <a
-                            class="resource-download"
-                            href="${escapeHtml(
-                              driveDownloadUrl(r)
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            data-stop-card="true"
-                          >
-                            Tải PDF
-                          </a>
-                        `
-                        : ''
-                    }
-                  </div>
-
-                  <span class="resource-file">
-                    ${escapeHtml(r.file)}
-                  </span>
-                </div>
-              </div>
-            </article>
-          `;
-        })
-        .join('')
-    : `
-      <div
-        class="empty"
-        style="
-          grid-column:1/-1;
-          padding:30px;
-          border:1px dashed #d7dfeb;
-          border-radius:20px;
-          text-align:center;
-          color:#6b7a90;
-        "
-      >
-        Không tìm thấy tài liệu phù hợp.
-        Hãy thử từ khóa hoặc bộ lọc khác.
-      </div>
-    `;
-
-  loadMore.style.display =
-    sorted.length > shown ? 'inline-flex' : 'none';
-
-  updateStats();
-
-  grid
-    .querySelectorAll('.resource-card')
-    .forEach(card => {
-      const go = () => {
-        window.location.href =
-          card.dataset.detailUrl ||
-          `tai-lieu?id=${encodeURIComponent(
-            card.dataset.docId
-          )}`;
-      };
-
-      card.addEventListener('click', e => {
-        if (
-          e.target.closest(
-            'a,[data-stop-card="true"]'
-          )
-        ) {
-          return;
-        }
-
-        if (e.target.closest('button')) {
-          go();
-          return;
-        }
-
-        go();
-      });
-
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          go();
+  while (i < tokens.length) {
+    let bestMatch = null;
+    SEARCH_QUERY_ALIASES.forEach((group, groupIndex) => {
+      group.triggers.forEach(trigger => {
+        const triggerTokens = trigger.split(' ');
+        if (i + triggerTokens.length > tokens.length) return;
+        const matches = triggerTokens.every((token, offset) => tokens[i + offset] === token);
+        if (matches && (!bestMatch || triggerTokens.length > bestMatch.length)) {
+          bestMatch = { group, groupIndex, length: triggerTokens.length, label: trigger };
         }
       });
     });
 
-  grid
-    .querySelectorAll('.resource-detail-btn')
-    .forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
+    if (bestMatch) {
+      if (!usedGroups.has(bestMatch.groupIndex)) {
+        concepts.push({ label: bestMatch.label, variants: bestMatch.group.variants });
+        usedGroups.add(bestMatch.groupIndex);
+      }
+      i += bestMatch.length;
+      continue;
+    }
 
-        const card = btn.closest('.resource-card');
-
-        window.location.href =
-          card?.dataset.detailUrl ||
-          `tai-lieu?id=${encodeURIComponent(
-            btn.dataset.docId
-          )}`;
-      });
-    });
-}
-
-function updateStats() {
-  const subjects = new Set(
-    resourceData.map(r => r.subject).filter(Boolean)
-  ).size;
-
-  const grades = new Set(
-    resourceData.map(r => r.grade).filter(Boolean)
-  );
-
-  const docCount = resourceData.length;
-
-  const fmt = n =>
-    n > 99
-      ? `${Math.round(n / 10) * 10}+`
-      : String(n);
-
-  document.getElementById('statDocuments').textContent =
-    fmt(docCount);
-
-  document.getElementById('statSubjects').textContent =
-    subjects ? fmt(subjects) : '0';
-
-  document.getElementById('statGrades').textContent =
-    grades.size
-      ? Array.from(grades).sort().join('–')
-      : '10–12';
-
-  document.getElementById('heroStatDocuments').textContent =
-    fmt(docCount);
-
-  document.getElementById('heroStatSubjects').textContent =
-    subjects ? fmt(subjects) : '0';
-
-  document.getElementById('heroStatGrades').textContent =
-    grades.size;
-}
-
-function setFilter({
-  grade = activeGrade,
-  subject = activeSubject,
-  type = activeType,
-  scroll = true
-} = {}) {
-  activeGrade = grade;
-  activeSubject = subject;
-  activeType = type;
-  shown = 6;
-
-  document.querySelectorAll('.chip').forEach(x =>
-    x.classList.toggle(
-      'active',
-      x.dataset.grade === activeGrade
-    )
-  );
-
-  if (scroll) {
-    document
-      .getElementById('tai-lieu')
-      .scrollIntoView({ behavior: 'smooth' });
+    const token = tokens[i++];
+    if (GENERIC_TERMS.has(token)) continue;
+    concepts.push({ label: token, variants: [token] });
   }
 
-  render();
+  return concepts;
 }
 
-document
-  .querySelectorAll('.chip')
-  .forEach(btn =>
-    btn.addEventListener('click', () =>
-      setFilter({ grade: btn.dataset.grade })
-    )
-  );
+function getSearchIndex(resource) {
+  const cached = searchIndexCache.get(resource);
+  if (cached) return cached;
 
-document
-  .querySelectorAll('.subject-filter')
-  .forEach(btn =>
-    btn.addEventListener('click', () =>
-      setFilter({
-        grade: 'all',
-        subject: btn.dataset.subject,
-        type: 'all'
-      })
-    )
-  );
-
-document
-  .querySelectorAll('.type-filter')
-  .forEach(btn =>
-    btn.addEventListener('click', () =>
-      setFilter({
-        grade: 'all',
-        subject: 'all',
-        type: btn.dataset.type
-      })
-    )
-  );
-
-loadMore.addEventListener('click', () => {
-  shown += 3;
-  render();
-});
-
-searchBtn.addEventListener('click', () => {
-  query = searchInput.value.trim();
-  shown = 9;
-
-  document
-    .getElementById('tai-lieu')
-    .scrollIntoView({ behavior: 'smooth' });
-
-  render();
-});
-
-searchInput.addEventListener('input', () => {
-  query = searchInput.value.trim();
-
-  if (query.length === 0) {
-    shown = 6;
-    render();
-  }
-});
-
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    searchBtn.click();
-  }
-});
-
-document
-  .getElementById('menuBtn')
-  .addEventListener('click', () => {
-    const n = document.getElementById('mobileNav');
-    const b = document.getElementById('menuBtn');
-
-    const open = n.style.display === 'block';
-
-    n.style.display = open ? 'none' : 'block';
-
-    b.setAttribute(
-      'aria-expanded',
-      String(!open)
-    );
+  const fieldValues = [
+    ['title', resource.title, 12],
+    ['subject', resource.subject, 10],
+    ['exam', resource.exam || resource.examName || '', 11],
+    ['type', resource.type, 8],
+    ['grade', `lop ${resource.grade || ''} ${resource.grade || ''}`, 7],
+    ['tags', `${resource.tags || ''} ${resource.keywords || ''}`, 6],
+    ['slug', resource.slug, 5],
+    ['desc', resource.desc, 3],
+    ['id', resource.id, 1.5]
+  ];
+  const fields = fieldValues.map(([name, value, weight]) => {
+    const text = normalizeSearch(value || '');
+    return { name, text, words: text.split(' ').filter(Boolean), weight };
   });
+  const index = {
+    fields,
+    title: fields.find(field => field.name === 'title').text,
+    subject: fields.find(field => field.name === 'subject').text,
+    exam: fields.find(field => field.name === 'exam').text,
+    type: fields.find(field => field.name === 'type').text,
+    allText: fields.map(field => field.text).join(' ')
+  };
+  searchIndexCache.set(resource, index);
+  return index;
+}
 
-document
-  .querySelectorAll('.mobile-nav a')
-  .forEach(a =>
-    a.addEventListener(
-      'click',
-      () =>
-        (document.getElementById(
-          'mobileNav'
-        ).style.display = 'none')
-    )
-  );
+function tokenScore(term, words) {
+  let best = 0;
+  for (const word of words) {
+    if (word === term) best = Math.max(best, 10);
+    else if (term.length >= 4 && word.startsWith(term)) best = Math.max(best, 7);
+    else if (term.length >= 4 && word.length >= 4 && term.startsWith(word)) best = Math.max(best, 6);
+    else if (term.length >= 4 && word.length >= 4 && editDistanceLE1(term, word)) best = Math.max(best, 5);
+  }
+  return best;
+}
 
-document.getElementById('year').textContent =
-  new Date().getFullYear();
+function variantFieldScore(variant, field) {
+  const normalized = normalizeSearch(variant);
+  if (!normalized || !field.text) return 0;
+  if (includesSearchPhrase(field.text, normalized)) {
+    return field.weight * (normalized.includes(' ') ? 1.28 : 1.12);
+  }
 
-function openDocument(id) {
-  const r = resourceData.find(
-    x => String(x.id) === String(id)
-  );
+  const phraseTokens = normalized.split(' ').filter(Boolean);
+  if (phraseTokens.length > 1) {
+    const scores = phraseTokens.map(token => tokenScore(token, field.words));
+    if (scores.every(score => score > 0)) return field.weight * (Math.min(...scores) / 10) * 0.72;
+    return 0;
+  }
+  return field.weight * tokenScore(normalized, field.words) / 10;
+}
 
-  if (!r) return;
+function resourceSearchScore(resource, query) {
+  const normalizedQuery = normalizeSearch(query);
+  if (!normalizedQuery) return 0;
 
-  const tone = toneFor(r.subject);
+  const concepts = buildSearchConcepts(normalizedQuery);
+  // A search for only generic words such as "tài liệu" should show the full catalog.
+  if (!concepts.length) return 1;
 
-  docModalVisual.className =
-    `doc-modal-visual tone-${tone}`;
+  const index = getSearchIndex(resource);
+  let score = 0;
+  let matchedConcepts = 0;
 
-  docModalVisual.innerHTML = `
-    <div class="resource-visual-icon">
-      ${r.icon || icons.file}
-    </div>
-    <span>${escapeHtml(r.subject)}</span>
-  `;
-
-  docModalType.textContent =
-    (r.type || 'PDF').toUpperCase();
-
-  docModalMeta.innerHTML = `
-    <span>Lớp ${escapeHtml(r.grade)}</span>
-    <span>${escapeHtml(r.subject)}</span>
-    <span>${escapeHtml(r.type)}</span>
-  `;
-
-  docModalTitle.textContent = r.title;
-  docModalDesc.textContent = r.desc || '';
-
-  docModalDetails.innerHTML = `
-    <div>
-      <span>Định dạng</span>
-      <strong>PDF</strong>
-    </div>
-
-    <div>
-      <span>Dung lượng</span>
-      <strong>${escapeHtml(r.file || 'PDF')}</strong>
-    </div>
-
-    <div>
-      <span>Trạng thái</span>
-      <strong>MIỄN PHÍ</strong>
-    </div>
-
-    ${
-      r.hot
-        ? `
-          <div>
-            <span>Ưu tiên</span>
-            <strong>HOT</strong>
-          </div>
-        `
-        : ''
+  for (const concept of concepts) {
+    let best = 0;
+    for (const variant of concept.variants) {
+      for (const field of index.fields) {
+        best = Math.max(best, variantFieldScore(variant, field));
+      }
     }
-  `;
-
-  const view = driveViewUrl(r);
-  const download = driveDownloadUrl(r);
-  const enabled = Boolean(view);
-
-  docModalView.href = view || '#';
-  docModalDownload.href = download || '#';
-
-  docModalView.style.pointerEvents =
-    enabled ? 'auto' : 'none';
-
-  docModalDownload.style.pointerEvents =
-    enabled ? 'auto' : 'none';
-
-  docModalCopy.dataset.url = view || '';
-
-  docModal.classList.add('is-open');
-  docModal.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('modal-open');
-
-  docModalClose.focus();
-}
-
-function closeDocument() {
-  docModal.classList.remove('is-open');
-  docModal.setAttribute('aria-hidden', 'true');
-  document.body.classList.remove('modal-open');
-}
-
-docModalClose.addEventListener(
-  'click',
-  closeDocument
-);
-
-docModal.addEventListener('click', e => {
-  if (e.target.matches('[data-close-modal]')) {
-    closeDocument();
-  }
-});
-
-document.addEventListener('keydown', e => {
-  if (
-    e.key === 'Escape' &&
-    docModal.classList.contains('is-open')
-  ) {
-    closeDocument();
-  }
-});
-
-docModalCopy.addEventListener(
-  'click',
-  async () => {
-    const url = docModalCopy.dataset.url;
-
-    if (!url) return;
-
-    try {
-      await navigator.clipboard.writeText(url);
-
-      const old = docModalCopy.textContent;
-
-      docModalCopy.textContent = 'Đã sao chép';
-
-      setTimeout(
-        () => (docModalCopy.textContent = old),
-        1400
-      );
-    } catch {
-      window.prompt(
-        'Sao chép liên kết tài liệu:',
-        url
-      );
+    if (best > 0) {
+      matchedConcepts++;
+      score += best;
     }
   }
-);
 
-async function syncResources() {
-  const remote = await loadFromGoogleSheet();
+  if (!matchedConcepts) return 0;
+  const coverage = matchedConcepts / concepts.length;
+  // Multi-word queries should match most of the requested concepts, avoiding noisy OR-only results.
+  if (concepts.length > 1 && coverage < 0.6) return 0;
+  score *= 0.45 + 0.55 * coverage;
 
-  if (remote) {
-    resourceData = remote;
-    render();
-    return true;
-  }
+  if (includesSearchPhrase(index.title, normalizedQuery)) score += 48;
+  if (includesSearchPhrase(index.subject, normalizedQuery)) score += 28;
+  if (includesSearchPhrase(index.exam, normalizedQuery)) score += 30;
+  if (includesSearchPhrase(index.type, normalizedQuery)) score += 18;
+  if (includesSearchPhrase(index.allText, normalizedQuery)) score += 8;
+  if (matchedConcepts === concepts.length) score += 16;
 
-  render(); 
-  return false;
+  return score;
 }
 
-if (syncBtn) {
-  syncBtn.addEventListener(
-    'click',
-    async () => {
-      syncBtn.disabled = true;
-      syncBtn.textContent = '↻ Đang đồng bộ...';
-
-      await syncResources();
-
-      setTimeout(() => {
-        syncBtn.disabled = false;
-        syncBtn.textContent = '↻ Đồng bộ';
-      }, 700);
-    }
-  );
+function matchesFilters(r){ return (activeGrade==='all'||r.grade===activeGrade)&&(activeSubject==='all'||r.subject===activeSubject)&&(activeType==='all'||r.type===activeType); }
+function filteredSorted(){
+  const base=resourceData.filter(matchesFilters);
+  if(!normalizeSearch(query)) return [...base].sort((a,b)=>Number(b.featured)-Number(a.featured)||Number(b.hot)-Number(a.hot)||String(b.publishedAt||'').localeCompare(String(a.publishedAt||''))||String(a.title).localeCompare(String(b.title),'vi'));
+  return base.map(r=>({...r,__score:resourceSearchScore(r,query)})).filter(r=>r.__score>0).sort((a,b)=>b.__score-a.__score||Number(b.featured)-Number(a.featured)||Number(b.hot)-Number(a.hot));
 }
+function driveViewUrl(r){return r.url||(r.driveId?`https://drive.google.com/file/d/${r.driveId}/view`:'');}
+function driveDownloadUrl(r){return r.driveId?`https://drive.google.com/uc?export=download&id=${r.driveId}`:driveViewUrl(r);}
 
-(async function init() {
-  await syncResources();
-})();
-/* HDT FINAL DETAIL UX FIX
-   Prevent full-page reload when clicking "Xem chi tiết".
-   Keeps shareable ?slug=... URLs via History API and opens the existing modal.
-*/
-(function () {
-  function findResourceBySlug(slug) {
-    if (!slug || !Array.isArray(resourceData)) return null;
-    const normalized = String(slug).trim().toLowerCase();
+function render(){
+  const sorted=filteredSorted(), visible=sorted.slice(0,shown);
+  grid.innerHTML=visible.length?visible.map(r=>{
+    const tone=toneFor(r.subject), hasUrl=Boolean(r.url||r.driveId), detailUrl=`tai-lieu?slug=${encodeURIComponent(r.slug||slugifyVi(r.title))}`;
+    return `<article class="resource-card tone-${tone}" data-doc-id="${escapeHtml(r.id)}" data-detail-url="${detailUrl}" tabindex="0" role="link" aria-label="Xem ${escapeHtml(r.title)}"><div class="resource-thumb"><div class="resource-thumb-pattern"></div><div class="resource-badge-row"><span class="resource-type-badge">PDF</span><span class="resource-badge">${r.hot?'<span class="badge-dot hot"></span>HOT · ':''}<span class="badge-dot free"></span>MIỄN PHÍ</span></div><div class="resource-visual"><span class="resource-visual-icon">${r.icon||icons.file}</span><span class="resource-visual-label">${escapeHtml(r.subject)}</span></div></div><div class="resource-body"><div class="resource-meta"><span>Lớp ${escapeHtml(r.grade)}</span><span>${escapeHtml(r.subject)}</span><span>${escapeHtml(r.type)}</span></div><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.desc)}</p><div class="resource-footer"><div class="resource-actions">${hasUrl?`<button class="resource-link resource-detail-btn" type="button" data-doc-id="${escapeHtml(r.id)}">Xem chi tiết <span>→</span></button>`:`<span class="resource-link muted-link">Sắp cập nhật</span>`}${hasUrl?`<a class="resource-download" href="${escapeHtml(driveDownloadUrl(r))}" target="_blank" rel="noopener noreferrer" data-stop-card="true">Tải PDF</a>`:''}</div><span class="resource-file">${escapeHtml(r.file)}</span></div></div></article>`;
+  }).join(''):`<div class="empty search-empty" style="grid-column:1/-1;padding:34px;border:1px dashed #d7dfeb;border-radius:20px;text-align:center;color:#6b7a90"><strong>Chưa tìm thấy tài liệu phù hợp.</strong><br><span>Thử “Toán 12”, “ĐGNL”, “TSA”, “đề thi thử” hoặc tên tài liệu cụ thể.</span></div>`;
+  loadMore.style.display=sorted.length>shown?'inline-flex':'none';
+  updateSearchFeedback(sorted.length);
+  updateStats();
+  grid.querySelectorAll('.resource-card').forEach(card=>{
+    const go=()=>{window.location.href=card.dataset.detailUrl||`tai-lieu?id=${encodeURIComponent(card.dataset.docId)}`};
+    card.addEventListener('click',e=>{if(e.target.closest('a,[data-stop-card="true"]'))return;if(e.target.closest('button')){go();return}go()});
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+  });
+  grid.querySelectorAll('.resource-detail-btn').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const card=btn.closest('.resource-card');window.location.href=card?.dataset.detailUrl||`tai-lieu?id=${encodeURIComponent(btn.dataset.docId)}`}));
+}
+function updateSearchFeedback(count){
+  const hasQ=normalizeSearch(query).length>0;
+  if(!searchFeedback) return;
+  if(hasQ){ searchFeedback.innerHTML=count?`Tìm thấy <strong>${count}</strong> tài liệu cho “${escapeHtml(query)}”.`:`Không tìm thấy tài liệu cho “${escapeHtml(query)}”. Hãy thử một từ khóa gần nghĩa.`; searchFeedback.classList.toggle('is-empty',!count); }
+  else searchFeedback.textContent='';
+  if(searchClear) searchClear.hidden=!hasQ;
+}
+function updateStats(){
+  const subjects=new Set(resourceData.map(r=>r.subject).filter(Boolean)).size, grades=new Set(resourceData.map(r=>r.grade).filter(Boolean));
+  const docCount=resourceData.length, fmt=n=>n>99?`${Math.round(n/10)*10}+`:String(n);
+  document.getElementById('statDocuments').textContent=fmt(docCount);
+  document.getElementById('statSubjects').textContent=subjects?fmt(subjects):'0';
+  document.getElementById('statGrades').textContent=grades.size?Array.from(grades).sort().join('–'):'10–12';
+  document.getElementById('heroStatDocuments').textContent=fmt(docCount);
+  document.getElementById('heroStatSubjects').textContent=subjects?fmt(subjects):'0';
+  document.getElementById('heroStatGrades').textContent=grades.size;
+}
+function setFilter({grade=activeGrade,subject=activeSubject,type=activeType,scroll=true}={}){
+  activeGrade=grade; activeSubject=subject; activeType=type; shown=6;
+  document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active',x.dataset.grade===activeGrade));
+  if(scroll) document.getElementById('tai-lieu').scrollIntoView({behavior:'smooth'});
+  render();
+}
+function runSearch(value=searchInput.value,scroll=true){query=value.trim();shown=9;if(scroll)document.getElementById('tai-lieu').scrollIntoView({behavior:'smooth'});render();}
+document.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click',()=>setFilter({grade:btn.dataset.grade})));
+document.querySelectorAll('.subject-filter').forEach(btn=>btn.addEventListener('click',()=>setFilter({grade:'all',subject:btn.dataset.subject,type:'all'})));
+document.querySelectorAll('.type-filter').forEach(btn=>btn.addEventListener('click',()=>setFilter({grade:'all',subject:'all',type:btn.dataset.type})));
+document.querySelectorAll('[data-search]').forEach(btn=>btn.addEventListener('click',()=>{searchInput.value=btn.dataset.search;runSearch(btn.dataset.search,true)}));
+loadMore.addEventListener('click',()=>{shown+=3;render();});
+searchBtn.addEventListener('click',()=>runSearch(searchInput.value,true));
+searchInput.addEventListener('input',()=>{const v=searchInput.value.trim();if(v.length===0){query='';shown=6;render();}else if(v.length>=2){query=v;shown=9;render();}else{query='';shown=6;render();}});
+searchInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();runSearch(searchInput.value,true)}});
+searchClear?.addEventListener('click',()=>{searchInput.value='';query='';shown=6;searchInput.focus();render();});
+document.getElementById('menuBtn').addEventListener('click',()=>{const n=document.getElementById('mobileNav'),b=document.getElementById('menuBtn'),open=n.style.display==='block';n.style.display=open?'none':'block';b.setAttribute('aria-expanded',String(!open))});
+document.querySelectorAll('.mobile-nav a').forEach(a=>a.addEventListener('click',()=>document.getElementById('mobileNav').style.display='none'));
+document.getElementById('year').textContent=new Date().getFullYear();
 
-    return resourceData.find((r) => {
-      const candidate = r.slug || slugifyVi(r.title);
-      return String(candidate).toLowerCase() === normalized;
-    }) || null;
+function openDocument(id){const r=resourceData.find(x=>String(x.id)===String(id));if(!r)return;const tone=toneFor(r.subject);docModalVisual.className=`doc-modal-visual tone-${tone}`;docModalVisual.innerHTML=`<div class="resource-visual-icon">${r.icon||icons.file}</div><span>${escapeHtml(r.subject)}</span>`;docModalType.textContent=(r.type||'PDF').toUpperCase();docModalMeta.innerHTML=`<span>Lớp ${escapeHtml(r.grade)}</span><span>${escapeHtml(r.subject)}</span><span>${escapeHtml(r.type)}</span>`;docModalTitle.textContent=r.title;docModalDesc.textContent=r.desc||'';docModalDetails.innerHTML=`<div><span>Định dạng</span><strong>PDF</strong></div><div><span>Dung lượng</span><strong>${escapeHtml(r.file||'PDF')}</strong></div><div><span>Trạng thái</span><strong>MIỄN PHÍ</strong></div>${r.hot?'<div><span>Ưu tiên</span><strong>HOT</strong></div>':''}`;const view=driveViewUrl(r),download=driveDownloadUrl(r);const enabled=Boolean(view);docModalView.href=view||'#';docModalDownload.href=download||'#';docModalView.style.pointerEvents=enabled?'auto':'none';docModalDownload.style.pointerEvents=enabled?'auto':'none';docModalCopy.dataset.url=view||'';docModal.classList.add('is-open');docModal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');docModalClose.focus();}
+function closeDocument(){docModal.classList.remove('is-open');docModal.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
+docModalClose.addEventListener('click',closeDocument);docModal.addEventListener('click',e=>{if(e.target.matches('[data-close-modal]'))closeDocument()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&docModal.classList.contains('is-open'))closeDocument()});
+docModalCopy.addEventListener('click',async()=>{const url=docModalCopy.dataset.url;if(!url)return;try{await navigator.clipboard.writeText(url);const old=docModalCopy.textContent;docModalCopy.textContent='Đã sao chép';setTimeout(()=>docModalCopy.textContent=old,1400)}catch{window.prompt('Sao chép liên kết tài liệu:',url)}});
+async function syncResources(){const remote=await loadFromGoogleSheet();if(remote){resourceData=remote;render();return true}render();return false;}
+if(syncBtn)syncBtn.addEventListener('click',async()=>{syncBtn.disabled=true;syncBtn.textContent='↻ Đang đồng bộ...';await syncResources();setTimeout(()=>{syncBtn.disabled=false;syncBtn.textContent='↻ Đồng bộ'},700)});
+(async function init(){await syncResources()})();
+
+/* HDT v22.1 — smooth document details without full-page reload */
+(function enableSmoothDocumentDetails(){
+  function findResourceById(id){
+    return Array.isArray(resourceData)
+      ? resourceData.find(r => String(r.id) === String(id))
+      : null;
   }
 
-  function detailUrlFor(r) {
-    const slug = r?.slug || slugifyVi(r?.title || '');
-    return `tai-lieu?slug=${encodeURIComponent(slug)}`;
+  function slugFor(r){
+    return r?.slug || slugifyVi(r?.title || '');
   }
 
-  function updateDocumentSeo(r) {
-    if (!r) return;
+  function shareableUrl(r){
+    return `${location.origin}/tai-lieu?slug=${encodeURIComponent(slugFor(r))}`;
+  }
 
-    const title = `${r.title} | HDT Study`;
+  function updateDocumentUrl(r){
+    const url = shareableUrl(r);
+    history.pushState({ hdtDocument: slugFor(r) }, '', url);
+  }
 
-    const description =
+  function updateDocumentMeta(r){
+    if(!r) return;
+    const title = `${r.title} — HDT Study`;
+    const desc = String(
       r.desc ||
-      `Tài liệu ${r.subject || ''} lớp ${r.grade || ''} miễn phí trên HDT Study.`;
-
-    const canonicalUrl =
-      `${window.location.origin}/${detailUrlFor(r).replace(/^\//, '')}`;
+      `Tài liệu ${r.subject || 'THPT'} lớp ${r.grade || ''} miễn phí trên HDT Study.`
+    ).replace(/\s+/g,' ').trim().slice(0,160);
 
     document.title = title;
 
-    const descriptionMeta =
-      document.querySelector('meta[name="description"]');
+    const meta = document.querySelector('meta[name="description"]');
+    if(meta) meta.setAttribute('content', desc);
 
-    if (descriptionMeta) {
-      descriptionMeta.setAttribute('content', description);
-    }
-
-    let canonical =
-      document.querySelector('link[rel="canonical"]');
-
-    if (!canonical) {
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if(!canonical){
       canonical = document.createElement('link');
       canonical.rel = 'canonical';
       document.head.appendChild(canonical);
     }
+    canonical.href = shareableUrl(r);
 
-    canonical.href = canonicalUrl;
-
-    const ogTitle =
-      document.querySelector('meta[property="og:title"]');
-
-    const ogDescription =
-      document.querySelector('meta[property="og:description"]');
-
-    const ogUrl =
-      document.querySelector('meta[property="og:url"]');
-
-    if (ogTitle) {
-      ogTitle.setAttribute('content', title);
-    }
-
-    if (ogDescription) {
-      ogDescription.setAttribute('content', description);
-    }
-
-    if (ogUrl) {
-      ogUrl.setAttribute('content', canonicalUrl);
-    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if(ogTitle) ogTitle.setAttribute('content', title);
+    if(ogDescription) ogDescription.setAttribute('content', desc);
+    if(ogUrl) ogUrl.setAttribute('content', shareableUrl(r));
   }
 
-  function restoreListSeo() {
-    document.title =
-      'HDT Study — Tài liệu ôn thi THPTQG miễn phí';
+  function restoreListMeta(){
+    document.title = 'HDT Study — Tài liệu ôn thi THPTQG miễn phí';
 
-    const descriptionMeta =
-      document.querySelector('meta[name="description"]');
-
-    if (descriptionMeta) {
-      descriptionMeta.setAttribute(
+    const meta = document.querySelector('meta[name="description"]');
+    if(meta){
+      meta.setAttribute(
         'content',
         'HDT Study – kho tài liệu ôn thi THPTQG miễn phí, đề thi, chuyên đề và tài liệu học tập cho học sinh THPT.'
       );
     }
 
-    const canonical =
-      document.querySelector('link[rel="canonical"]');
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if(canonical) canonical.href = `${location.origin}/`;
 
-    if (canonical) {
-      canonical.href = `${window.location.origin}/`;
-    }
-
-    const ogTitle =
-      document.querySelector('meta[property="og:title"]');
-
-    const ogDescription =
-      document.querySelector('meta[property="og:description"]');
-
-    const ogUrl =
-      document.querySelector('meta[property="og:url"]');
-
-    if (ogTitle) {
-      ogTitle.setAttribute(
-        'content',
-        'HDT Study — Tài liệu ôn thi THPTQG miễn phí'
-      );
-    }
-
-    if (ogDescription) {
-      ogDescription.setAttribute(
-        'content',
-        'Kho tài liệu, đề thi và chuyên đề THPTQG miễn phí cho học sinh.'
-      );
-    }
-
-    if (ogUrl) {
-      ogUrl.setAttribute(
-        'content',
-        `${window.location.origin}/`
-      );
-    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if(ogTitle) ogTitle.setAttribute('content', document.title);
+    if(ogDescription) ogDescription.setAttribute('content', 'Kho tài liệu, đề thi và chuyên đề THPTQG miễn phí cho học sinh.');
+    if(ogUrl) ogUrl.setAttribute('content', `${location.origin}/`);
   }
 
-  function openFromSlug(slug, push) {
-    const r = findResourceBySlug(slug);
+  /* Capture before the old card handlers so the browser does not navigate/reload. */
+  document.addEventListener('click', function(event){
+    const detailButton = event.target.closest?.('.resource-detail-btn');
+    const card = event.target.closest?.('.resource-card');
 
-    if (!r) return false;
-
-    if (push) {
-      history.pushState(
-        {
-          hdtDocument:
-            r.slug || slugifyVi(r.title)
-        },
-        '',
-        detailUrlFor(r)
-      );
-    }
-
-    openDocument(r.id);
-    updateDocumentSeo(r);
-
-    return true;
-  }
-
-  function closeAndCleanUrl() {
-    closeDocument();
-
-    if (
-      new URLSearchParams(window.location.search).has('slug')
-    ) {
-      history.replaceState({}, '', 'tai-lieu');
-      restoreListSeo();
-    }
-  }
-
-  // Capture clicks before the old card handlers run,
-  // so no full-page navigation occurs.
-  document.addEventListener(
-    'click',
-    function (event) {
-      const detailBtn =
-        event.target.closest?.('.resource-detail-btn');
-
-      const card =
-        event.target.closest?.('.resource-card');
-
-      if (detailBtn) {
-        const resource = resourceData.find(
-          (r) =>
-            String(r.id) ===
-            String(detailBtn.dataset.docId)
-        );
-
-        if (!resource) return;
-
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-
-        openFromSlug(
-          resource.slug ||
-            slugifyVi(resource.title),
-          true
-        );
-
-        return;
-      }
-
-      // Preserve download links and other interactive elements.
-      if (
-        !card ||
-        event.target.closest(
-          'a,button,input,select,textarea,[data-stop-card="true"]'
-        )
-      ) {
-        return;
-      }
-
-      const resource = resourceData.find(
-        (r) =>
-          String(r.id) ===
-          String(card.dataset.docId)
-      );
-
-      if (!resource) return;
+    if(detailButton){
+      const resource = findResourceById(detailButton.dataset.docId);
+      if(!resource) return;
 
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
 
-      openFromSlug(
-        resource.slug ||
-          slugifyVi(resource.title),
-        true
-      );
-    },
-    true
-  );
-
-  docModalClose.addEventListener(
-    'click',
-    function () {
-      if (
-        new URLSearchParams(window.location.search).has(
-          'slug'
-        )
-      ) {
-        history.replaceState({}, '', 'tai-lieu');
-        restoreListSeo();
-      }
+      updateDocumentUrl(resource);
+      openDocument(resource.id);
+      updateDocumentMeta(resource);
+      return;
     }
-  );
 
-  window.addEventListener(
-    'popstate',
-    function () {
-      const slug =
-        new URLSearchParams(
-          window.location.search
-        ).get('slug');
+    if(!card) return;
+    if(event.target.closest('a,button,input,select,textarea,[data-stop-card="true"]')) return;
 
-      if (slug) {
-        openFromSlug(slug, false);
-      } else {
-        closeDocument();
-        restoreListSeo();
-      }
+    const resource = findResourceById(card.dataset.docId);
+    if(!resource) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    updateDocumentUrl(resource);
+    openDocument(resource.id);
+    updateDocumentMeta(resource);
+  }, true);
+
+  /* Keep browser Back/Forward in sync with the modal. */
+  window.addEventListener('popstate', function(){
+    const slug = new URLSearchParams(location.search).get('slug');
+
+    if(!slug){
+      closeDocument();
+      restoreListMeta();
+      return;
     }
-  );
 
-  // If a user opens a shareable ?slug=... URL directly,
-  // show the matching document modal after Google Sheets data renders.
-  const gridEl =
-    document.getElementById('resourceGrid');
+    const resource = Array.isArray(resourceData)
+      ? resourceData.find(r => slugFor(r) === slug)
+      : null;
 
-  if (gridEl) {
-    const observer =
-      new MutationObserver(function () {
-        const slug =
-          new URLSearchParams(
-            window.location.search
-          ).get('slug');
+    if(resource){
+      openDocument(resource.id);
+      updateDocumentMeta(resource);
+    }
+  });
 
-        if (!slug) return;
-
-        if (openFromSlug(slug, false)) {
-          observer.disconnect();
-        }
-      });
-
-    observer.observe(gridEl, {
-      childList: true
+  /* Closing the modal cleans the shareable URL without reloading. */
+  if(docModalClose){
+    docModalClose.addEventListener('click', function(){
+      if(new URLSearchParams(location.search).has('slug')){
+        history.replaceState({}, '', `${location.origin}/`);
+        restoreListMeta();
+      }
     });
   }
-
-  // Initial fallback for a very fast/local render.
-  setTimeout(function () {
-    const slug =
-      new URLSearchParams(
-        window.location.search
-      ).get('slug');
-
-    if (slug) {
-      openFromSlug(slug, false);
-    }
-  }, 1200);
 })();
 
-
-/* =========================================================
-   HDT FINAL SEARCH ENHANCEMENT
-   - Không đụng vào logic "Xem chi tiết"
-   - Tìm không dấu
-   - Từ đồng nghĩa
-   - Kỳ thi: THPTQG / ĐGNL / V-ACT / HSA / ĐGTD / TSA
-   - Cho phép lỗi gõ nhẹ
-   - Tìm theo title / subject / type / grade / desc / tags / exam
-   - Search realtime khi người dùng nhập
-   ========================================================= */
-
-(function initAdvancedSearch() {
-  const aliasMap = {
-    thptqg: [
-      'thptqg',
-      'tot nghiep thpt',
-      'thi tot nghiep',
-      'tot nghiep'
-    ],
-
-    'tot nghiep': [
-      'tot nghiep',
-      'tot nghiep thpt',
-      'thptqg'
-    ],
-
-    dgnl: [
-      'dgnl',
-      'danh gia nang luc',
-      'vac t',
-      'vac-t',
-      'v act',
-      'v-act',
-      'hsa'
-    ],
-
-    'danh gia nang luc': [
-      'danh gia nang luc',
-      'dgnl',
-      'vac t',
-      'vac-t',
-      'v act',
-      'v-act',
-      'hsa'
-    ],
-
-    'vac t': [
-      'vac t',
-      'vac-t',
-      'v act',
-      'v-act',
-      'dgnl',
-      'danh gia nang luc'
-    ],
-
-    'vac-t': [
-      'vac t',
-      'vac-t',
-      'v act',
-      'v-act',
-      'dgnl',
-      'danh gia nang luc'
-    ],
-
-    hsa: [
-      'hsa',
-      'dgnl',
-      'danh gia nang luc'
-    ],
-
-    dgtd: [
-      'dgtd',
-      'danh gia tu duy',
-      'tsa'
-    ],
-
-    'danh gia tu duy': [
-      'danh gia tu duy',
-      'dgtd',
-      'tsa'
-    ],
-
-    tsa: [
-      'tsa',
-      'dgtd',
-      'danh gia tu duy'
-    ],
-
-    'de thi': [
-      'de thi',
-      'de',
-      'luyen de',
-      'thi thu'
-    ],
-
-    'luyen de': [
-      'luyen de',
-      'de thi',
-      'thi thu'
-    ],
-
-    toan: [
-      'toan'
-    ],
-
-    'ngu van': [
-      'ngu van',
-      'van'
-    ],
-
-    'tieng anh': [
-      'tieng anh',
-      'english'
-    ],
-
-    'vat ly': [
-      'vat ly',
-      'ly'
-    ],
-
-    'hoa hoc': [
-      'hoa hoc',
-      'hoa'
-    ],
-
-    'sinh hoc': [
-      'sinh hoc',
-      'sinh'
-    ],
-
-    'lich su': [
-      'lich su',
-      'su'
-    ],
-
-    'dia ly': [
-      'dia ly',
-      'dia'
-    ],
-
-    'gdkt pl': [
-      'gdkt pl',
-      'gdkt&pl',
-      'kinh te phap luat'
-    ]
-  };
-
-  function normalize(value = '') {
-    return String(value)
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/[^\p{L}\p{N}]+/gu, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function tokenize(value = '') {
-    return normalize(value)
-      .split(/\s+/)
-      .filter(Boolean);
-  }
-
-  function levenshtein(a, b) {
-    if (a === b) return 0;
-    if (!a) return b.length;
-    if (!b) return a.length;
-
-    const prev = new Array(b.length + 1);
-
-    for (let j = 0; j <= b.length; j++) {
-      prev[j] = j;
-    }
-
-    for (let i = 1; i <= a.length; i++) {
-      let current = [i];
-
-      for (let j = 1; j <= b.length; j++) {
-        const insert = current[j - 1] + 1;
-        const remove = prev[j] + 1;
-        const replace =
-          prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1);
-
-        current[j] = Math.min(
-          insert,
-          remove,
-          replace
-        );
-      }
-
-      for (let j = 0; j <= b.length; j++) {
-        prev[j] = current[j];
-      }
-    }
-
-    return prev[b.length];
-  }
-
-  function fuzzyTokenMatch(token, hayTokens) {
-    if (!token || token.length < 4) {
-      return false;
-    }
-
-    const maxDistance =
-      token.length >= 7
-        ? 2
-        : 1;
-
-    return hayTokens.some(
-      candidate =>
-        candidate.length >= 4 &&
-        Math.abs(candidate.length - token.length) <= maxDistance &&
-        levenshtein(token, candidate) <= maxDistance
-    );
-  }
-
-  function expandToken(token) {
-    const normalized = normalize(token);
-
-    const aliases =
-      aliasMap[normalized] || [normalized];
-
-    return [
-      normalized,
-      ...aliases.map(normalize)
-    ].filter(Boolean);
-  }
-
-  function termMatches(
-    term,
-    normalizedHay,
-    hayTokens
-  ) {
-    const normalizedTerm = normalize(term);
-
-    if (!normalizedTerm) {
-      return true;
-    }
-
-    if (normalizedHay.includes(normalizedTerm)) {
-      return true;
-    }
-
-    if (normalizedTerm.includes(' ')) {
-      const words = normalizedTerm
-        .split(/\s+/)
-        .filter(Boolean);
-
-      if (
-        words.length &&
-        words.every(word =>
-          normalizedHay.includes(word)
-        )
-      ) {
-        return true;
-      }
-
-      return false;
-    }
-
-    return fuzzyTokenMatch(
-      normalizedTerm,
-      hayTokens
-    );
-  }
-
-  function advancedMatches(resource) {
-    const gradeOk =
-      activeGrade === 'all' ||
-      String(resource.grade) === String(activeGrade);
-
-    const subjectOk =
-      activeSubject === 'all' ||
-      normalize(resource.subject) ===
-        normalize(activeSubject);
-
-    const typeOk =
-      activeType === 'all' ||
-      normalize(resource.type) ===
-        normalize(activeType);
-
-    if (
-      !gradeOk ||
-      !subjectOk ||
-      !typeOk
-    ) {
-      return false;
-    }
-
-    const rawQuery =
-      String(query || '').trim();
-
-    if (!rawQuery) {
-      return true;
-    }
-
-    const normalizedHay = normalize(
-      [
-        resource.title,
-        resource.subject,
-        resource.type,
-        resource.grade,
-        resource.desc,
-
-        resource.tags,
-        resource.exam,
-        resource.examType,
-        resource.category,
-        resource.keywords,
-        resource.slug
-      ]
-        .filter(Boolean)
-        .join(' ')
-    );
-
-    const hayTokens =
-      tokenize(normalizedHay);
-
-    /*
-      Trường hợp người dùng nhập nguyên cụm:
-      "đánh giá năng lực"
-      "đánh giá tư duy"
-      "tốt nghiệp thpt"
-    */
-    const wholeQuery =
-      normalize(rawQuery);
-
-    const wholeAliases =
-      aliasMap[wholeQuery] || [];
-
-    if (
-      normalizedHay.includes(wholeQuery)
-    ) {
-      return true;
-    }
-
-    if (
-      wholeAliases.some(alias =>
-        normalizedHay.includes(normalize(alias))
-      )
-    ) {
-      return true;
-    }
-
-    /*
-      Trường hợp nhập nhiều từ:
-      "toan 12"
-      "lich su 12"
-      "de thi toan"
-      "dgnl 2026"
-    */
-    const tokens =
-      tokenize(rawQuery);
-
-    if (!tokens.length) {
-      return true;
-    }
-
-    return tokens.every(token => {
-      const alternatives =
-        expandToken(token);
-
-      return alternatives.some(
-        term =>
-          termMatches(
-            term,
-            normalizedHay,
-            hayTokens
-          )
-      );
-    });
-  }
-
-  /*
-    Thay matcher cũ bằng matcher mới,
-    KHÔNG đụng phần card/detail/modal.
-  */
-  matches = advancedMatches;
-
-  /*
-    Tìm realtime nhưng có debounce nhẹ
-    để không render liên tục khi đang gõ.
-  */
-  let searchTimer = null;
-
-  function runSearch({
-    scroll = true
-  } = {}) {
-    query =
-      String(searchInput?.value || '').trim();
-
-    shown = query ? 9 : 6;
-
-    if (
-      scroll &&
-      document.getElementById('tai-lieu')
-    ) {
-      document
-        .getElementById('tai-lieu')
-        .scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-    }
-
-    render();
-  }
-
-  if (searchInput) {
-    searchInput.placeholder =
-      'Tìm tài liệu, môn học, lớp, ĐGNL, TSA...';
-
-    /*
-      Capture phase để chặn listener search cũ
-      đang nằm trong script.js.
-    */
-    searchInput.addEventListener(
-      'input',
-      event => {
-        event.stopImmediatePropagation();
-
-        clearTimeout(searchTimer);
-
-        searchTimer = setTimeout(() => {
-          runSearch({
-            scroll: false
-          });
-        }, 160);
-      },
-      true
-    );
-
-    searchInput.addEventListener(
-      'keydown',
-      event => {
-        if (event.key !== 'Enter') {
-          return;
-        }
-
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        clearTimeout(searchTimer);
-
-        runSearch({
-          scroll: true
-        });
-      },
-      true
-    );
-  }
-
-  if (searchBtn) {
-    searchBtn.addEventListener(
-      'click',
-      event => {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        clearTimeout(searchTimer);
-
-        runSearch({
-          scroll: true
-        });
-      },
-      true
-    );
-  }
-})();
